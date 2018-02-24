@@ -1,0 +1,11 @@
+node_modules
+.idea
+.DS_Store
+.idea/deployment.xml
+.idea/inspectionProfiles/
+.idea/mongoSettings.xml
+.idea/webServers.xml
+.idea/workspace.xml
+npm-debug.log
+public/aaa.html
+public/upload/
