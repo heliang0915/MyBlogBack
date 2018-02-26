@@ -4,6 +4,7 @@
 //配置数据库链接
 var mongoose = require('mongoose');
 var util = require('util');
+var fs=require("fs");
 //全局配置对象
 var config = require('../config');
 //获取数据库连接对象
