@@ -35,7 +35,9 @@ var getMaxOrder = exports.getMaxOrder = function (callback) {
     } : callback;
     // console.dir(model);
     // console.log(modelName);
-    model[modelName].find({}, function (err, doc) {
+    var query=model[modelName].find({});
+    query.sort({order: -1})
+    query.exec(function (err, doc) {
         if (err) {
             callback(err);
             // errLogger.error(err);
@@ -44,9 +46,10 @@ var getMaxOrder = exports.getMaxOrder = function (callback) {
             if (doc[0]) {
                 order = doc[0].order;
             }
+            console.log("order>>>"+order);
             callback(null, order);
         }
-    }).sort({order: -1});
+    })
 }
 
 //根据条件查询数量
@@ -54,7 +57,6 @@ var count = exports.count = function (data, callback) {
     data = data == undefined ? {} : data;
     callback = callback == undefined ? function () {
     } : callback;
-    console.log("modelName>>>" + modelName);
     model[modelName].count(data, function (err, len) {
         if (err) {
             callback(err);
@@ -78,7 +80,6 @@ exports.add = function (modelData, callback) {
         //自动插入uuid
         newModelSchema.order = parseInt(order) + 1;
         newModelSchema.uuid = tempUUID;
-        //console.log("newModelSchema>>"+JSON.stringify(newModelSchema));
         newModelSchema.save(function (err) {
             if (err) {
                 callback(err);
@@ -96,14 +97,13 @@ exports.add = function (modelData, callback) {
 exports.edit = function (uuid, editObj, callback) {
     callback = callback == undefined ? function () {
     } : callback;
-    findByUUID(uuid, function (err, model) {
+    findByUUIDByNoParse(uuid, function (err, model) {
         if (err) {
             callback(err);
             console.log("修改出现错误：" + err);
             // errLogger.error(err);
         } else {
             //循环
-            console.log(model);
             for (var key in editObj) {
                 if (editObj[key] != undefined) {
                     model[key] = editObj[key];
@@ -134,15 +134,13 @@ exports.del = function (uuids, callback) {
         uuidAry.push(uuids);
     }
     uuidAry.forEach(function (uid) {
-        //console.log("uid>>>>"+uid);
-        findByUUID(uid, function (err, modelSchema) {
+        findByUUIDByNoParse(uid, function (err, modelSchema) {
             if (err) {
                 callback(err);
                 console.log("删除出现错误：" + err);
-                // errLogger.error(err);
-
             } else {
                 //删除
+                console.log("modelSchema>"+modelSchema);
                 modelSchema.remove();
                 callback(null);
                 console.log("删除成功");
@@ -172,6 +170,7 @@ exports.find = function (data, callback) {
 
 //分页
 exports.page = function (currentPage, data, callback, sortFile) {
+    console.log("modelName>>>>>>"+modelName);
     //查询总数
     count(data, function (err, total) {
         if (err) {
@@ -179,19 +178,21 @@ exports.page = function (currentPage, data, callback, sortFile) {
             // errLogger.error(err);
         } else {
             var pageSize = config.mongo.pageSize;
-            var start = (currentPage - 1) * pageSize;
+            var start = (parseFloat(currentPage) - 1) * pageSize;
             var desc = {};
             desc["order"] = -1;
             if (sortFile) {
                 desc = sortFile;
             }
-            var query=model[modelName].find(data).sort(desc);
+            var query=model[modelName].find(data);
+            query.sort(desc);
             query.skip(start);
-            query.limit(config.mongo.pageSize);
+            query.limit(pageSize);
             query.exec(function (err, models) {
 
                 var info={
                    total,
+                   pageSize,
                    models:parseModels(models)
                 }
                 if (err) {
@@ -236,11 +237,15 @@ function parseModels(models) {
 //格式化model
 function parseModel(model) {
     var item={};
-    Object.keys(model._doc).forEach(function(key){
-        if(key!="_id"&&key!="__v"){
-            item[key]=model._doc[key];
-        }
-    })
+    if(model){
+        Object.keys(model._doc).forEach(function(key){
+            if(key!="_id"&&key!="__v"){
+                item[key]=model._doc[key];
+            }
+        })
+    }else{
+        item=getDefaultModel()
+    }
     return item;
 }
 
@@ -248,6 +253,7 @@ function parseModel(model) {
 var findByUUID = exports.findByUUID = function (uuid, callback) {
     callback = callback == undefined ? function () {
     } : callback;
+
     model[modelName].findOne({'uuid': uuid}, function (err, model) {
         if (!err) {
             callback(null, parseModel(model));
@@ -255,8 +261,31 @@ var findByUUID = exports.findByUUID = function (uuid, callback) {
         } else {
             callback(err, null);
             console.log("查询出现错误：" + err);
-            // errLogger.error(err);
         }
-
     });
+}
+
+var findByUUIDByNoParse = exports.findByUUIDByNoParse = function (uuid, callback) {
+    callback = callback == undefined ? function () {
+    } : callback;
+
+    model[modelName].findOne({'uuid': uuid}, function (err, model) {
+        if (!err) {
+            callback(null, model);
+            console.log("根据uuid查询单条数据成功");
+        } else {
+            callback(err, null);
+            console.log("查询出现错误：" + err);
+        }
+    });
+}
+
+
+var getDefaultModel=()=>{
+    let defaultModel={};
+    let table=model[modelName].schema.obj;
+    Object.keys(table).forEach((key)=>{
+        defaultModel[key]='';
+    })
+    return defaultModel;
 }

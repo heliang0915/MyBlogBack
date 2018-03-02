@@ -8,7 +8,7 @@ var config={
         //数据库链接地址
         url : 'mongodb://127.0.0.1:27017/myBlog',
         //分页
-        pageSize : 10
+        pageSize :7
     }
 }
 module.exports=config;

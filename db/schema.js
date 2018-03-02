@@ -7,7 +7,7 @@ var db = mongodb.connect();
 var channelModel=new Schema({
      uuid:String,
      name:String, //栏目名称
-     node:String,  //描述
+     note:String,  //描述
      order:Number
 })
 
@@ -17,6 +17,7 @@ var blogModel=new Schema({
      title:String,
      content:String,
      tag:String,//标签
+     pic:String,//图片
      date:String, //发布时间
      pubUser:String, //发布人
      order:Number

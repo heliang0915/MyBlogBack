@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var channel = require('./routes/channel');
+var article = require('./routes/article');
 var app = express();
 
 
@@ -33,6 +34,8 @@ app.all('*', function(req, res, next) {
 
 app.use('/', index);
 app.use('/channel', channel);
+app.use('/article', article);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
