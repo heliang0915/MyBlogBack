@@ -15,12 +15,12 @@ router.get('/list',function(req,res){
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
     blogManager.page(currentPage, {}, function(err,info){
         channelManager.setModelName("channelModel");
-        var ary=[];
         var counter=0;
         info.models.forEach((article)=>{
             channelManager.findByUUID(article.tag,(err,channel)=>{
                 counter++;
                 article["channelName"]=channel.name;
+                article["content"]=article.content.substring(0,120);
                 if(counter==info.models.length){
                     blogManager.setModelName("blogModel");
                     res.send(info);
