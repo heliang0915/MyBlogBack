@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var channel = require('./routes/channel');
+var editor = require('./routes/editor');
 var article = require('./routes/article');
 var app = express();
 
@@ -34,6 +35,7 @@ app.all('*', function(req, res, next) {
 
 app.use('/', index);
 app.use('/channel', channel);
+app.use('/editor', editor);
 app.use('/article', article);
 
 

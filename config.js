@@ -11,4 +11,5 @@ var config={
         pageSize :7
     }
 }
+
 module.exports=config;

@@ -13,10 +13,12 @@ router.all('*',function(req,res,next){
 router.get('/list',function(req,res){
     var currentPage=req.query.page;
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
+    //查询文章列表
     blogManager.page(currentPage, {}, function(err,info){
         channelManager.setModelName("channelModel");
         var counter=0;
         info.models.forEach((article)=>{
+            //查询频道信息
             channelManager.findByUUID(article.tag,(err,channel)=>{
                 counter++;
                 article["channelName"]=channel.name;
@@ -38,11 +40,17 @@ router.get('/single/:uuid',function(req,res){
         }else{
             blogManager.setModelName("blogModel");
             blogManager.findByUUID(uuid,(err,module)=>{
-                let json={
-                    channels,
-                    module
-                }
-                res.send(json);
+                channelManager.setModelName("channelModel");
+                channelManager.findByUUID(module.tag,(err,channel)=>{
+                    module["channelName"]=channel.name;
+                    let json={
+                        channels,
+                        module
+                    }
+                    blogManager.setModelName("blogModel");
+                    res.send(json);
+                })
+
             })
         }
     })
