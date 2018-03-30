@@ -6,7 +6,9 @@ roleManager=new roleManager();
 router.post('/list',function(req,res){
 
      var currentPage=req.body.page;
-     var {sort,params,pageSize}=req.body;
+     var sort=req.body.sort;
+     var params=req.body.params;
+     var pageSize=req.body.pageSize;
      var query={};
      currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
 
