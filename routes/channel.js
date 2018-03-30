@@ -1,24 +1,30 @@
 var express=require("express")
 var router=express.Router();
-var  channelManager=require("../db/channelManager")
+var  channelManager=require("../db/channelManager");
+channelManager=new channelManager();
+router.post('/list',function(req,res){
+    var currentPage=req.body.page;
+    var {sort,params,pageSize}=req.body;
+    console.log(pageSize);
+    // var sort=req.body.sort;
+    var query={};
+    // query=Object.assign({},query,params);
 
-router.all('*',function(req,res,next){
-    channelManager.setModelName("channelModel");
-    next();
-})
-
-
-
-router.get('/list',function(req,res){
-    var currentPage=req.query.page;
+    // if(params&&params.title){
+    //     query['name']=new RegExp(params.title);
+    // }
+    // if(params&&params.tag){
+    //     query['tag']=params.tag;
+    // }
+    // console.log(pageSize);
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
-    channelManager.page(currentPage, {}, function(err,modules){
+     channelManager.page(currentPage, query, function(err,modules){
         res.send(modules);
-    })
+    },sort,pageSize)
+
 })
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-
     channelManager.findByUUID(uuid,(err,module)=>{
         res.send(module);
     })
@@ -27,7 +33,6 @@ router.get('/single/:uuid',function(req,res){
 router.post('/save',function(req,res){
     let channel=req.body;
     let {name,note,uuid}=channel;
-    console.log("uuid>>>"+uuid)
     if(uuid){
         channelManager.edit(uuid,channel,(err)=>{
             res.send(err==null?"ok":err);
@@ -50,6 +55,12 @@ router.get('/delete/:uuid',function(req,res){
         res.send(err==null?"ok":err);
     })
 })
+
+// router.get('/a',function(req,res){
+//     res.set
+//     res.render('canvas');
+//
+// })
 
 
 module.exports=router;

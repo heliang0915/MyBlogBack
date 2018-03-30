@@ -2,6 +2,9 @@
  * 栏目管理类
  */
 var baseDao = require('./base');
-baseDao.setModelName("channelModel");
-exports=module.exports=baseDao;
-//继承基类 扩展方法
+var util=require('util');
+function channelManager(){
+    baseDao.call(this,"channelModel")
+}
+util.inherits(channelManager,baseDao);
+module.exports=channelManager;

@@ -7,35 +7,74 @@ var uuid = require('node-uuid');
 var config = require('../config');
 
 //获取users的schema
-var modelName;
+// var modelName;
 var ModelSchema = {};
 var model = require('./schema');
-
-exports.setModelName = function (modelNa) {
-    modelName = modelNa;
+function Base(modelName){
+    this.modelName=modelName;
     ModelSchema[modelName] = mongoose.model(modelName);
-    // console.log("modelName>>>"+modelName);
-    exports.modelName = modelName;
-    exports.model = model;
+    this.findByData =  (data, callback)=>{
+        var self=this;
+        callback = callback == undefined ? function () {
+        } : callback;
+        model[this.modelName].find(data, function (err, models) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, self.parseModels(models));
+            }
+        });
+
+    }
+    this.getDefaultModel=()=>{
+        console.log("getDefaultModel>>>>"+this.modelName);
+        let defaultModel={};
+        let table=model[this.modelName].schema.obj;
+        Object.keys(table).forEach((key)=>{
+            defaultModel[key]='';
+        })
+        return defaultModel;
+    }
+    //生成uuid
+    this.getUUID=() =>{
+        var reg = /\-/g;
+        var tempUUID = uuid.v4().replace(reg, function () {
+            return "";
+        });
+        return tempUUID;
+    }
+    //格式化model
+    this.parseModel=(model)=>{
+        var item={};
+        if(model){
+            Object.keys(model._doc).forEach(function(key){
+                if(key!="_id"&&key!="__v"){
+                    item[key]=model._doc[key];
+                }
+            })
+        }else{
+            item=this.getDefaultModel()
+        }
+        return item;
+    }
+    //格式化model集合
+    this.parseModels=(models)=>{
+        var ary=[];
+        var self=this;
+        models.forEach(function(modle){
+            var item=self.parseModel(modle);
+            ary.push(item);
+        })
+        return ary;
+    }
+
+
 }
-
-
-/*生成uuid*/
-function getUUID() {
-    var reg = /\-/g;
-    var tempUUID = uuid.v4().replace(reg, function () {
-        return "";
-    });
-    return tempUUID;
-}
-
 //返回最大的max
-var getMaxOrder = exports.getMaxOrder = function (callback) {
+Base.prototype.getMaxOrder = function (callback) {
     callback = callback == undefined ? function () {
     } : callback;
-    // console.dir(model);
-    // console.log(modelName);
-    var query=model[modelName].find({});
+    var query=model[this.modelName].find({});
     query.sort({order: -1})
     query.exec(function (err, doc) {
         if (err) {
@@ -52,15 +91,15 @@ var getMaxOrder = exports.getMaxOrder = function (callback) {
     })
 }
 
+
 //根据条件查询数量
-var count = exports.count = function (data, callback) {
+Base.prototype.count = function (data, callback) {
     data = data == undefined ? {} : data;
     callback = callback == undefined ? function () {
     } : callback;
-    model[modelName].count(data, function (err, len) {
+    model[this.modelName].count(data, function (err, len) {
         if (err) {
             callback(err);
-            // errLogger.error(err);
         } else {
             callback(null, len);
         }
@@ -68,12 +107,12 @@ var count = exports.count = function (data, callback) {
 }
 
 /*新增*/
-exports.add = function (modelData, callback) {
+Base.prototype.add = function (modelData, callback) {
     /*获取uuid*/
-    var tempUUID = getUUID();
-    var newModelSchema = new ModelSchema[modelName]();
-    getMaxOrder(function (err, order) {
-        //console.log(order);
+    var tempUUID = this.getUUID();
+    var newModelSchema = new ModelSchema[this.modelName]();
+    this.getMaxOrder(function (err, order) {
+        console.log(order);
         for (var fileName in modelData) {
             newModelSchema[fileName] = modelData[fileName];
         }
@@ -94,10 +133,10 @@ exports.add = function (modelData, callback) {
 }
 
 /*修改*/
-exports.edit = function (uuid, editObj, callback) {
+Base.prototype.edit = function (uuid, editObj, callback) {
     callback = callback == undefined ? function () {
     } : callback;
-    findByUUIDByNoParse(uuid, function (err, model) {
+    this.findByUUIDByNoParse(uuid, function (err, model) {
         if (err) {
             callback(err);
             console.log("修改出现错误：" + err);
@@ -124,7 +163,8 @@ exports.edit = function (uuid, editObj, callback) {
 }
 
 /*删除*/
-exports.del = function (uuids, callback) {
+Base.prototype.del = function (uuids, callback) {
+    var self=this;
     callback = callback == undefined ? function () {
     } : callback;
     var uuidAry = [];
@@ -134,7 +174,7 @@ exports.del = function (uuids, callback) {
         uuidAry.push(uuids);
     }
     uuidAry.forEach(function (uid) {
-        findByUUIDByNoParse(uid, function (err, modelSchema) {
+        self.findByUUIDByNoParse(uid, function (err, modelSchema) {
             if (err) {
                 callback(err);
                 console.log("删除出现错误：" + err);
@@ -150,51 +190,56 @@ exports.del = function (uuids, callback) {
 }
 
 /*查询*/
-exports.findAll = function (callback) {
-    findByData({}, callback);
+Base.prototype.findAll = function (callback) {
+    this.findByData({}, callback);
 }
 
 
-exports.find = function (data, callback) {
+Base.prototype.find = function (data, callback) {
+    var self=this;
     callback = callback == undefined ? function () {
     } : callback;
-    model[modelName].find(data, function (err, models) {
+
+    model[this.modelName].find(data, function (err, models) {
         if (err) {
             callback(err);
             // errLogger.error(err);
         } else {
-            callback(null, parseModels(models));
+            callback(null, self.parseModels(models));
         }
     });
 }
 
 //分页
-exports.page = function (currentPage, data, callback, sortFile) {
-    console.log("modelName>>>>>>"+modelName);
+Base.prototype.page = function (currentPage, data, callback, sortFile,ps) {
+    var self=this;
     //查询总数
-    count(data, function (err, total) {
+    this.count(data, function (err, total) {
         if (err) {
             callback(err);
             // errLogger.error(err);
         } else {
-            var pageSize = config.mongo.pageSize;
+            var pageSize = ps||config.mongo.pageSize;
             var start = (parseFloat(currentPage) - 1) * pageSize;
             var desc = {};
             desc["order"] = -1;
             if (sortFile) {
                 desc = sortFile;
             }
-            var query=model[modelName].find(data);
+            // console.log(model[self.modelName]);
+            var query=model[self.modelName].find(data);
             query.sort(desc);
             query.skip(start);
             query.limit(pageSize);
-            query.exec(function (err, models) {
 
+            query.exec(function (err, models) {
+                // console.log("执行前...."+self.parseModels);
                 var info={
-                   total,
-                   pageSize,
-                   models:parseModels(models)
+                    total,
+                    pageSize,
+                    models:self.parseModels(models)
                 }
+                // console.log("page执行完毕...."+info);
                 if (err) {
                     callback(err);
                     // errLogger.error(err);
@@ -206,57 +251,15 @@ exports.page = function (currentPage, data, callback, sortFile) {
         }
     });
 }
-
-//根据条件查询数据
-var findByData = function (data, callback) {
-    callback = callback == undefined ? function () {
-    } : callback;
-    //console.log(  model[modelName].find);
-    model[modelName].find(data, function (err, models) {
-        if (err) {
-            callback(err);
-            // errLogger.error(err);
-        } else {
-            callback(null, parseModels(models));
-        }
-    });
-
-}
-
-//格式化model集合
-function parseModels(models) {
-    var ary=[];
-    models.forEach(function(modle){
-
-        var item=parseModel(modle);
-        ary.push(item);
-    })
-    return ary;
-}
-
-//格式化model
-function parseModel(model) {
-    var item={};
-    if(model){
-        Object.keys(model._doc).forEach(function(key){
-            if(key!="_id"&&key!="__v"){
-                item[key]=model._doc[key];
-            }
-        })
-    }else{
-        item=getDefaultModel()
-    }
-    return item;
-}
-
 /*根据uuid查询单条数据*/
-var findByUUID = exports.findByUUID = function (uuid, callback) {
+Base.prototype.findByUUID = function (uuid, callback) {
+    var self=this;
     callback = callback == undefined ? function () {
     } : callback;
 
-    model[modelName].findOne({'uuid': uuid}, function (err, model) {
+    model[this.modelName].findOne({'uuid': uuid}, function (err, model) {
         if (!err) {
-            callback(null, parseModel(model));
+            callback(null, self.parseModel(model));
             console.log("根据uuid查询单条数据成功");
         } else {
             callback(err, null);
@@ -264,12 +267,12 @@ var findByUUID = exports.findByUUID = function (uuid, callback) {
         }
     });
 }
-
-var findByUUIDByNoParse = exports.findByUUIDByNoParse = function (uuid, callback) {
+/*根据uuid查询单条数据*/
+Base.prototype.findByUUIDByNoParse = function (uuid, callback) {
     callback = callback == undefined ? function () {
     } : callback;
 
-    model[modelName].findOne({'uuid': uuid}, function (err, model) {
+    model[this.modelName].findOne({'uuid': uuid}, function (err, model) {
         if (!err) {
             callback(null, model);
             console.log("根据uuid查询单条数据成功");
@@ -279,13 +282,4 @@ var findByUUIDByNoParse = exports.findByUUIDByNoParse = function (uuid, callback
         }
     });
 }
-
-
-var getDefaultModel=()=>{
-    let defaultModel={};
-    let table=model[modelName].schema.obj;
-    Object.keys(table).forEach((key)=>{
-        defaultModel[key]='';
-    })
-    return defaultModel;
-}
+module.exports=Base;
