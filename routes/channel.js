@@ -36,7 +36,10 @@ router.get('/single/:uuid',function(req,res){
 
 router.post('/save',function(req,res){
     var channel=req.body;
-    var {name,note,uuid}=channel;
+    var name=channel.name;
+    var note=channel.note;
+    var uuid=channel.uuid;
+    // var {name,note,uuid}=channel;
     if(uuid){
         channelManager.edit(uuid,channel,function(err){
             res.send(err==null?"ok":err);
