@@ -122,7 +122,7 @@ router.get('/getChildMenu/:uuid',function(req,res){
 
 router.post('/save',function(req,res){
     var user=req.body;
-    var {uuid}=user;
+    var uuid=user.uuid;
     if(uuid){
         menuManager.edit(uuid,user,function (err){
             res.send(err==null?"ok":err);

@@ -34,7 +34,7 @@ router.get('/single/:uuid',function(req,res){
 
 router.post('/save',function(req,res){
     var user=req.body;
-    var {uuid}=user;
+    var uuid=user.uuid;
     if(uuid){
         userManager.edit(uuid,user,function (err){
             res.send(err==null?"ok":err);

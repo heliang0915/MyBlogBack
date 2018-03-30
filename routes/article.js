@@ -102,7 +102,12 @@ router.get('/single/:uuid',function(req,res){
 
 router.post('/save',function(req,res){
     var article=req.body;
-    var {title,content,uuid,tag,pic}=article;
+    var title=article.title;
+    var content=article.content;
+    var uuid=article.uuid;
+    var tag=article.tag;
+    var pic=article.pic;
+
     if(uuid){
         blogManager.edit(uuid,article,function (err){
             res.send(err==null?"ok":err);
