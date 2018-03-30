@@ -4,8 +4,12 @@ var  channelManager=require("../db/channelManager");
 channelManager=new channelManager();
 router.post('/list',function(req,res){
     var currentPage=req.body.page;
-    var {sort,params,pageSize}=req.body;
-    console.log(pageSize);
+    // var {sort,params,pageSize}=req.body;
+    var sort=req.body.sort;
+    var params=req.body.params;
+    var pageSize=req.body.pageSize;
+
+    // console.log(pageSize);
     // var sort=req.body.sort;
     var query={};
     // query=Object.assign({},query,params);
@@ -25,16 +29,16 @@ router.post('/list',function(req,res){
 })
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    channelManager.findByUUID(uuid,(err,module)=>{
+    channelManager.findByUUID(uuid,function (err,module){
         res.send(module);
     })
 })
 
 router.post('/save',function(req,res){
-    let channel=req.body;
-    let {name,note,uuid}=channel;
+    var channel=req.body;
+    var {name,note,uuid}=channel;
     if(uuid){
-        channelManager.edit(uuid,channel,(err)=>{
+        channelManager.edit(uuid,channel,function(err){
             res.send(err==null?"ok":err);
         })
     }else{
@@ -49,9 +53,9 @@ router.post('/save',function(req,res){
 
 })
 
-router.get('/delete/:uuid',function(req,res){
+router.get('/devare/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    channelManager.del(uuid,(err)=>{
+    channelManager.del(uuid,function (err){
         res.send(err==null?"ok":err);
     })
 })

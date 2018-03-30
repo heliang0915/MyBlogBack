@@ -25,16 +25,16 @@ router.post('/list',function(req,res){
 
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    userManager.findByUUID(uuid,(err,module)=>{
+    userManager.findByUUID(uuid,function(err,module){
         res.send(module);
     })
 })
 
 router.post('/save',function(req,res){
-    let user=req.body;
-    let {uuid}=user;
+    var user=req.body;
+    var {uuid}=user;
     if(uuid){
-        userManager.edit(uuid,user,(err)=>{
+        userManager.edit(uuid,user,function(err){
             res.send(err==null?"ok":err);
         })
     }else{
@@ -49,9 +49,9 @@ router.post('/save',function(req,res){
 })
 
 
-router.get('/delete/:uuid',function(req,res){
+router.get('/devare/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    userManager.del(uuid,(err)=>{
+    userManager.del(uuid,function(err){
         res.send(err==null?"ok":err);
     })
 })

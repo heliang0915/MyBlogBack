@@ -27,10 +27,10 @@ router.post('/list',function(req,res){
         var counter=0;
         if(info.models.length>0){
             //获取所有分类
-            channelManager.findAll((err,channels)=>{
-                info.models.forEach((article)=>{
+            channelManager.findAll(function (err,channels){
+                info.models.forEach(function (article){
                     //查询频道信息
-                    channelManager.findByUUID(article.tag,(err,channel)=>{
+                    channelManager.findByUUID(article.tag,function (err,channel){
                         counter++;
                         article["channelName"]=channel.name;
                         article["content"]=article.content.substring(0,120);
@@ -42,7 +42,7 @@ router.post('/list',function(req,res){
                 })
             })
         }else{
-            channelManager.findAll((err,channels)=>{
+            channelManager.findAll(function (err,channels){
                 info.channels=channels;
                 res.send(info);
             });
@@ -52,12 +52,12 @@ router.post('/list',function(req,res){
 })
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    channelManager.findAll((err,channels)=>{
+    channelManager.findAll(function (err,channels){
         if(err){
             res.send({});
         }else{
-            blogManager.findByUUID(uuid,(err,module)=>{
-                channelManager.findByUUID(module.tag,(err,channel)=>{
+            blogManager.findByUUID(uuid,function (err,module){
+                channelManager.findByUUID(module.tag,function (err,channel){
                     module["channelName"]=channel.name;
                     var $=cheerio.load(module.content);
                     // var ps=$('p');
@@ -85,7 +85,7 @@ router.get('/single/:uuid',function(req,res){
 
                     // console.log(ary);
                     module.contentAry=ary;
-                    let json={
+                    var json={
                         channels,
                         module
                     }
@@ -101,10 +101,10 @@ router.get('/single/:uuid',function(req,res){
 })
 
 router.post('/save',function(req,res){
-    let article=req.body;
-    let {title,content,uuid,tag,pic}=article;
+    var article=req.body;
+    var {title,content,uuid,tag,pic}=article;
     if(uuid){
-        blogManager.edit(uuid,article,(err)=>{
+        blogManager.edit(uuid,article,function (err){
             res.send(err==null?"ok":err);
         })
     }else{
@@ -122,9 +122,9 @@ router.post('/save',function(req,res){
     }
 })
 
-router.get('/delete/:uuid',function(req,res){
+router.get('/devare/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    blogManager.del(uuid,(err)=>{
+    blogManager.del(uuid,function (err){
         res.send(err==null?"ok":err);
     })
 })

@@ -13,7 +13,7 @@ var model = require('./schema');
 function Base(modelName){
     this.modelName=modelName;
     ModelSchema[modelName] = mongoose.model(modelName);
-    this.findByData =  (data, callback)=>{
+    this.findByData =  function(data, callback){
         var self=this;
         callback = callback == undefined ? function () {
         } : callback;
@@ -26,17 +26,17 @@ function Base(modelName){
         });
 
     }
-    this.getDefaultModel=()=>{
+    this.getDefaultModel=function(){
         console.log("getDefaultModel>>>>"+this.modelName);
-        let defaultModel={};
-        let table=model[this.modelName].schema.obj;
-        Object.keys(table).forEach((key)=>{
+        var defaultModel={};
+        var table=model[this.modelName].schema.obj;
+        Object.keys(table).forEach(function (key){
             defaultModel[key]='';
         })
         return defaultModel;
     }
     //生成uuid
-    this.getUUID=() =>{
+    this.getUUID=function (){
         var reg = /\-/g;
         var tempUUID = uuid.v4().replace(reg, function () {
             return "";
@@ -44,7 +44,7 @@ function Base(modelName){
         return tempUUID;
     }
     //格式化model
-    this.parseModel=(model)=>{
+    this.parseModel=function (model){
         var item={};
         if(model){
             Object.keys(model._doc).forEach(function(key){
@@ -58,7 +58,7 @@ function Base(modelName){
         return item;
     }
     //格式化model集合
-    this.parseModels=(models)=>{
+    this.parseModels=function (models){
         var ary=[];
         var self=this;
         models.forEach(function(modle){

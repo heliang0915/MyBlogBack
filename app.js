@@ -37,7 +37,7 @@ app.use('/user', user);
 app.use('/menu', menu);
 app.use('/right', right);
 app.use('/role', role);
-app.use('/',(req, res, next)=>{
+app.use('/',function(req, res, next){
     res.send("BLOGAPI");
 });
 // catch 404 and forward to error handler

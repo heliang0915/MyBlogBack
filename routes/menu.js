@@ -22,11 +22,10 @@ router.post('/list',function(req,res){
     var counter=0;
      menuManager.page(currentPage, query, function(err,info){
         if(info.models.length>0){
-            menuManager.findAll((err,menus)=>{
-                info.models.forEach((menu)=>{
+            menuManager.findAll(function (err,menus){
+                info.models.forEach(function (menu){
                     //查询信息
-                    menuManager.findByUUID(menu.parentId,(err,parentMenu)=>{
-                        // console.log(parentMenu.parentId);
+                    menuManager.findByUUID(menu.parentId,function(err,parentMenu){
                         counter++;
                         menu["parentMenuName"]=parentMenu.parentId==""?"根菜单":parentMenu.name;
                         if(counter==info.models.length){
@@ -37,38 +36,18 @@ router.post('/list',function(req,res){
                 })
             })
         }else{
-            menuManager.findAll((err,menus)=>{
+            menuManager.findAll(function(err,menus){
                 info.menus=menus;
                 res.send(info);
             });
         }
-
-
-            // console.log(modules);
-        // info.models.forEach((menu)=>{
-        //     console.log(menu.uuid);
-        //     menuManager.findByUUID(menu.uuid,(err,module)=>{
-        //         // console.log(module)
-        //         counter++;
-        //         console.log(counter)
-        //         menu["parentMenuName"]=module.name;
-        //         ary.push(menu);
-        //         // console.log("counter>>>"+counter)
-        //         if(counter==modules.models.length){
-        //             // info.channels=channels;
-        //             console.log(ary);
-        //             res.send(ary);
-        //         }
-        //     })
-        // })
-        // res.send(modules);
     },sort)
 })
 
 
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    menuManager.findByUUID(uuid,(err,module)=>{
+    menuManager.findByUUID(uuid,function (err,module){
 
         var ary=[];
         ary.push({
@@ -76,10 +55,10 @@ router.get('/single/:uuid',function(req,res){
                 parentId:"-1",
                 uuid:"-1"
             });
-        menuManager.findAll((err,menus)=>{
+        menuManager.findAll(function(err,menus){
            ary= ary.concat(menus);
 
-            let json={
+            var json={
                 menus:ary,
                 menu:module
             }
@@ -90,9 +69,9 @@ router.get('/single/:uuid',function(req,res){
 })
 
 router.get('/listByRank/:rank',function(req,res){
-    let rank=req.params.rank;
+    var rank=req.params.rank;
     // console.log(menuManager.find)
-    menuManager.find({"rank":rank},(err,modules)=>{
+    menuManager.find({"rank":rank},function (err,modules){
         console.log(err)
          res.send(modules);
     })
@@ -100,21 +79,11 @@ router.get('/listByRank/:rank',function(req,res){
 
 //查找指定菜单的子菜单
 router.get('/getChildMenu/:uuid',function(req,res){
-    let uuid=req.params.uuid;
-    // console.log(menuManager.find)
-    // menuManager.find({"parentId":uuid},(err,modules)=>{
-    //      console.log(err)
-
-
-    //      res.send(modules);
-    // })
-
-
-     let   children= getChildren(uuid);
-
+    var uuid=req.params.uuid;
+     var   children= getChildren(uuid);
        function getChild(uuid){
-            return new Promise((reslove,reject)=>{
-                menuManager.find({"parentId":uuid},(err,modules)=>{
+            return new Promise(function (reslove,reject){
+                menuManager.find({"parentId":uuid},function(err,modules){
                     console.log(modules);
                         if(err){
                             reject(err);
@@ -127,7 +96,7 @@ router.get('/getChildMenu/:uuid',function(req,res){
        }
 
      async function getChildren(uuid){
-        let children=await getChild(uuid);
+        var children=await getChild(uuid);
         for(var i=0;i<children.length;i++){
             var item=children[i];
             var c1=await getChild(item.uuid);
@@ -148,10 +117,10 @@ router.get('/getChildMenu/:uuid',function(req,res){
 
 
 router.post('/save',function(req,res){
-    let user=req.body;
-    let {uuid}=user;
+    var user=req.body;
+    var {uuid}=user;
     if(uuid){
-        menuManager.edit(uuid,user,(err)=>{
+        menuManager.edit(uuid,user,function (err){
             res.send(err==null?"ok":err);
         })
     }else{
@@ -166,9 +135,9 @@ router.post('/save',function(req,res){
 })
 
 
-router.get('/delete/:uuid',function(req,res){
+router.get('/devare/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    menuManager.del(uuid,(err)=>{
+    menuManager.del(uuid,function(err){
         res.send(err==null?"ok":err);
     })
 })
