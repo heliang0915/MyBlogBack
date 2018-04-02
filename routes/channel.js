@@ -14,9 +14,9 @@ router.post('/list',function(req,res){
     var query={};
     // query=Object.assign({},query,params);
 
-    // if(params&&params.title){
-    //     query['name']=new RegExp(params.title);
-    // }
+    if(params&&params.title){
+        query['name']=new RegExp(params.title);
+    }
     // if(params&&params.tag){
     //     query['tag']=params.tag;
     // }
