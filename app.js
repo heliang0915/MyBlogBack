@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var channel = require('./routes/channel');
 var editor = require('./routes/editor');
 var article = require('./routes/article');
+var index = require('./routes/index');
 var user = require('./routes/user');
 var menu = require('./routes/menu');
 var role = require('./routes/role');
@@ -30,6 +31,7 @@ app.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
+app.use('/', index);
 app.use('/channel', channel);
 app.use('/editor', editor);
 app.use('/article', article);
@@ -37,9 +39,12 @@ app.use('/user', user);
 app.use('/menu', menu);
 app.use('/right', right);
 app.use('/role', role);
-app.use('/',function(req, res, next){
-    res.send("BLOGAPI");
-});
+
+
+
+// app.use('/',function(req, res, next){
+//     res.send("BLOGAPI");
+// });
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

@@ -84,9 +84,7 @@ router.get('/listByRank/:rank',function(req,res){
 //查找指定菜单的子菜单
 // router.get('/getChildMenu/:uuid',function(req,res){
 //     var uuid=req.params.uuid;
-//      var   children= getChildren(uuid);
-//
-//
+//     var children= getChildren(uuid);
 //        function getChild(uuid){
 //             return new Promise(function (reslove,reject){
 //                 menuManager.find({"parentId":uuid},function(err,modules){
@@ -100,9 +98,6 @@ router.get('/listByRank/:rank',function(req,res){
 //                 });
 //             })
 //        }
-//
-//
-//
 //      async function getChildren(uuid){
 //         var children=await getChild(uuid);
 //         for(var i=0;i<children.length;i++){
@@ -115,10 +110,7 @@ router.get('/listByRank/:rank',function(req,res){
 //             }
 //             item.children=c1;
 //         }
-//
-//             // return children;
-//             res.send(children);
-//         // console.log(JSON.stringify(children));
+//         res.send(children);
 //    }
 // });
 

@@ -60,10 +60,6 @@ router.get('/single/:uuid',function(req,res){
                 channelManager.findByUUID(module.tag,function (err,channel){
                     module["channelName"]=channel.name;
                     var $=cheerio.load(module.content);
-                    // var ps=$('p');
-                    // ps.each(function () {
-                    //     console.log($(this).html());
-                    // })
                     var regText=/<p.*?>(.*?)<\/p>/g;
                     var imgReg=/<img(.*?)>(.*?)<\/img>/g;
                     var ary=[];
@@ -82,19 +78,13 @@ router.get('/single/:uuid',function(req,res){
                            ary.push(json);
                        }
                     });
-
-                    // console.log(ary);
                     module.contentAry=ary;
                     var json={
                         channels,
                         module
                     }
-
-
-
                     res.send(json);
                 })
-
             })
         }
     })
