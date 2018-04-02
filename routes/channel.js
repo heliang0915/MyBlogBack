@@ -3,24 +3,25 @@ var router=express.Router();
 var  channelManager=require("../db/channelManager");
 channelManager=new channelManager();
 router.post('/list',function(req,res){
-    var currentPage=req.body.page;
+    var currentPage=req.body.page.cur;
+    // console.log(req.body);
     // var {sort,params,pageSize}=req.body;
     var sort=req.body.sort;
-    var params=req.body.params;
+    var params=req.body.page.params;
     var pageSize=req.body.pageSize;
 
     // console.log(pageSize);
     // var sort=req.body.sort;
     var query={};
     // query=Object.assign({},query,params);
-
+    console.log(params);
     if(params&&params.title){
         query['name']=new RegExp(params.title);
     }
     // if(params&&params.tag){
     //     query['tag']=params.tag;
     // }
-    // console.log(pageSize);
+    console.log(query);
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
      channelManager.page(currentPage, query, function(err,modules){
         res.send(modules);
