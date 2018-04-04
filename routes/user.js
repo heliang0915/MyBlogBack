@@ -38,7 +38,7 @@ router.get('/single/:uuid', function (req, res) {
 router.get('/getUserInfo/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
     userManager.findByUUID(uuid, function (err, module) {
-        let json={};
+        var json={};
         json.name=module.name;
         json.pic=module.pic;
         json.uuid=module.uuid;
