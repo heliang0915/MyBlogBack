@@ -14,7 +14,7 @@ router.post('/list',function(req,res){
     // var sort=req.body.sort;
     var query={};
     // query=Object.assign({},query,params);
-    console.log(params);
+    // console.log(params);
     if(params&&params.title){
         query['name']=new RegExp(params.title);
     }

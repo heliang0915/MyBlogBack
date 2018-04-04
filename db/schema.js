@@ -26,12 +26,14 @@ var blogModel=new Schema({
 
 var userModel=new Schema({
    uuid:String,
+   nickName:String,//昵称
    name:String, //用户名
    pwd:String, //密码
    phone:String, //手机号
    loginType:String,//登录方式
    loginTime:String, //登录时间
    roleId:String, //角色
+   pic:String, //头像
    order:Number  //登录时间
 })
 

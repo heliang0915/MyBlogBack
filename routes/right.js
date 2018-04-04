@@ -51,7 +51,7 @@ router.post('/save',function(req,res){
 })
 
 
-router.get('/devare/:uuid',function(req,res){
+router.get('/delete/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
     userManager.del(uuid,function (err){
         res.send(err==null?"ok":err);

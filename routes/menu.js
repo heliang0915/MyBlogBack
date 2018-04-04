@@ -88,7 +88,7 @@ router.get('/listByRank/:rank',function(req,res){
 //        function getChild(uuid){
 //             return new Promise(function (reslove,reject){
 //                 menuManager.find({"parentId":uuid},function(err,modules){
-//                     console.log(modules);
+//                     // console.log(modules);
 //                         if(err){
 //                             reject(err);
 //                         }else{
@@ -113,8 +113,6 @@ router.get('/listByRank/:rank',function(req,res){
 //         res.send(children);
 //      }
 // });
-
-
 
 router.post('/save',function(req,res){
     var user=req.body;
