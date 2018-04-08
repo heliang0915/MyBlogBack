@@ -9,8 +9,10 @@ var fs=require("fs");
 var config = require('../config');
 //获取数据库连接对象
 exports.connect=function(){
-    console.log("数据库连接打开");
-    return mongoose.connect(config.mongo.url);
+
+    return mongoose.connect(config.mongo.url,function(err){
+        console.log("数据库连接打开"+err==null?"打开成功!":"打开失败,"+err);
+    });
 };
 //关闭数据库连接
 exports.unconnect=function(callback){
