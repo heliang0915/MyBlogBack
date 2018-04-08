@@ -11,7 +11,7 @@ var config = require('../config');
 exports.connect=function(){
 
     return mongoose.connect(config.mongo.url,function(err){
-        console.log("数据库连接打开"+err==null?"打开成功!":"打开失败,"+err);
+        console.log("数据库连接打开"+(err==null?"打开成功!":("打开失败,"+err)));
     });
 };
 //关闭数据库连接
