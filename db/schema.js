@@ -70,6 +70,7 @@ var commentModel=new Schema({
     content:String,//内容
     date:String,// 评论时间
     type:Number,//是评论还是回复 1为评论2为回复
+    source:String //1:微信 2:系统
 })
 
 
