@@ -1,9 +1,9 @@
 var express = require("express")
 var router = express.Router();
 var fetch=require("../util/fetch");
-var {appId,secret}=require("../config").wx;
-
-
+var wx=require("../config").wx;
+var appId=wx.appId;
+var secret=wx.secret;
 router.get('/login/:code', function (req, res) {
     var code=req.params.code;
     console.log(`-----------${code}`);
