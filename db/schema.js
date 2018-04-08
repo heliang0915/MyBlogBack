@@ -62,12 +62,24 @@ var rightModel=new Schema({
    order:Number  //排序
 })
 
+//用户评论/回复模型
+var commentModel=new Schema({
+    uuid:String,
+    userId:String, //用户ID
+    blogId:String, //博客ID
+    content:String,//内容
+    date:String,// 评论时间
+    type:Number,//是评论还是回复 1为评论2为回复
+})
+
+
 exports.channelModel = mongoose.model('channelModel', channelModel); //  栏目集合关联
 exports.blogModel = mongoose.model('blogModel', blogModel); //  博客集合关联
 exports.userModel=mongoose.model('userModel',userModel); //用户模型
 exports.roleModel=mongoose.model('roleModel',roleModel); //角色模型
 exports.menuModel=mongoose.model('menuModel',menuModel); //菜单模型
-exports.rightModel=mongoose.model('rightModel',menuModel); //权限模型
+exports.rightModel=mongoose.model('rightModel',rightModel); //权限模型
+exports.commentModel=mongoose.model('commentModel',commentModel); //用户评论/回复模型
 
 
 

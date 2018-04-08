@@ -11,6 +11,7 @@ var user = require('./routes/user');
 var menu = require('./routes/menu');
 var role = require('./routes/role');
 var right = require('./routes/right');
+var comment = require('./routes/comment');
 
 
 var app = express();
@@ -39,6 +40,7 @@ app.use('/user', user);
 app.use('/menu', menu);
 app.use('/right', right);
 app.use('/role', role);
+app.use('/comment', comment);
 
 
 
