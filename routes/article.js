@@ -97,6 +97,7 @@ router.post('/save',function(req,res){
     var uuid=article.uuid;
     var tag=article.tag;
     var pic=article.pic;
+    var pubUser=article.pubUser;
 
     if(uuid){
         blogManager.edit(uuid,article,function (err){
@@ -109,7 +110,7 @@ router.post('/save',function(req,res){
             tag,
             pic,
             date: moment().format("YYYY-MM-DD hh:mm:ss"),
-            pubUser:'张三'
+            pubUser:pubUser==null?"张三":pubUser
         }
         blogManager.add(articleModel,function(err){
             res.send(err==null?"ok":err);
