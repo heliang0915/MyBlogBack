@@ -12,6 +12,7 @@ var menu = require('./routes/menu');
 var role = require('./routes/role');
 var right = require('./routes/right');
 var comment = require('./routes/comment');
+var wx = require('./routes/wx');
 
 
 var app = express();
@@ -41,6 +42,7 @@ app.use('/menu', menu);
 app.use('/right', right);
 app.use('/role', role);
 app.use('/comment', comment);
+app.use('/wx', wx);
 
 
 

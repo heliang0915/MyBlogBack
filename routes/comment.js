@@ -1,4 +1,5 @@
 var express = require("express")
+var moment = require("moment")
 var router = express.Router();
 var commentManager = require("../db/commentManager");
 commentManager = new commentManager();
@@ -38,6 +39,7 @@ router.post('/save', function (req, res) {
             res.send(err == null ? "ok" : err);
         })
     } else {
+        comment.date=moment().format("YYYY-MM-DD hh:mm:ss");
         commentManager.add(comment, function (err) {
             res.send(err == null ? "ok" : err);
         })
