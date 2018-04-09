@@ -109,7 +109,7 @@ router.post('/save',function(req,res){
             content,
             tag,
             pic,
-            date: moment().format("YYYY-MM-DD hh:mm:ss"),
+            date: moment().format("YYYY-MM-DD HH:mm:ss"),
             pubUser:pubUser==null?"张三":pubUser
         }
         blogManager.add(articleModel,function(err){

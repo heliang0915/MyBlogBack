@@ -29,8 +29,9 @@ var userModel=new Schema({
    nickName:String,//昵称
    name:String, //用户名
    pwd:String, //密码
+   tid:String,//第三方唯一标志
    phone:String, //手机号
-   loginType:String,//登录方式
+   loginType:String,//登录方式 0.用户名密码 1.微信 2.QQ 3.手机号登录
    loginTime:String, //登录时间
    roleId:String, //角色
    pic:String, //头像
