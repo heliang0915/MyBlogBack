@@ -22,28 +22,34 @@ router.post('/list', function (req, res) {
     }
 
     var counter=0;
-    commentManager.page(currentPage, query, function (err, modules) {
-        console.log("start");
+    commentManager.page(currentPage, query, function (err, info) {
+
+        var modules=info.models;
         console.log(modules);
-        console.log("end");
-        console.log(err);
         modules.forEach(function(comment){
-            counter++;
             //微信用户
-            if(comment.source==1){
+            if(comment.source=='1'){
+
                var userId= comment.userId;
                 userManager.find({tid:userId},function(err,users){
+                    counter++;
+
+
                     if(users.length>0){
                         comment.userName=users[0].nickName||users[0].name;
                     }else{
                         comment.userName="无";
                     }
+
+                    console.log("counter>>>"+counter);
+                    if(counter==modules.length){
+                        console.log("111");
+                        res.send(info);
+                    }
                 })
             }
 
-            if(counter==modules.length){
-                res.send(modules);
-            }
+
         })
 
 
