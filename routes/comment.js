@@ -188,8 +188,14 @@ router.post('/save', function (req, res) {
 })
 router.get('/delete/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
-    commentManager.del(uuid, function (err) {
-        res.send(err == null ? "ok" : err);
+    commentManager.find({pid:uuid},function (err,comments) {
+        if(comments.length){
+            res.send("该评论下有回复不能删除");
+        }else{
+            commentManager.del(uuid, function (err) {
+                res.send(err == null ? "ok" : err);
+            })
+        }
     })
 })
 module.exports = router;
