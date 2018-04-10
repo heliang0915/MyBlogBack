@@ -21,8 +21,28 @@ router.post('/list', function (req, res) {
         query['type'] = params.type;
     }
 
+    var counter=0;
     commentManager.page(currentPage, query, function (err, modules) {
-        res.send(modules);
+        modules.forEach(function(comment){
+            counter++;
+            //微信用户
+            if(comment.source==1){
+               var userId= comment.userId;
+                userManager.find({tid:userId},function(err,users){
+                    if(users.length>0){
+                        comment.userName=users[0].nickName||users[0].name;
+                    }else{
+                        comment.userName="无";
+                    }
+                })
+            }
+
+            if(counter==modules.length){
+                res.send(modules);
+            }
+        })
+
+
     })
 })
 
