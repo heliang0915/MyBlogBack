@@ -23,8 +23,9 @@ router.post('/list', function (req, res) {
 
     var counter=0;
     commentManager.page(currentPage, query, function (err, modules) {
-
+        console.log("start");
         console.log(modules);
+        console.log("end");
         console.log(err);
         modules.forEach(function(comment){
             counter++;
