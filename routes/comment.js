@@ -58,7 +58,7 @@ router.post('/list', function (req, res) {
         })
 
 
-    })
+    },sort)
 })
 
 router.get('/single/:uuid', function (req, res) {
