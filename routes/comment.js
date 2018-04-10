@@ -3,8 +3,10 @@ var moment = require("moment")
 var router = express.Router();
 var commentManager = require("../db/commentManager");
 var userManager = require("../db/userManager");
+var blogManager = require("../db/blogManager");
 commentManager = new commentManager();
 userManager = new userManager();
+blogManager = new blogManager();
 
 router.post('/list', function (req, res) {
     var currentPage = req.body.page;
@@ -15,7 +17,7 @@ router.post('/list', function (req, res) {
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
 
     if (params && params.name) {
-        query['name'] = new RegExp(params.name);
+        query['content'] = new RegExp(params.name);
     }
     if (params && params.type) {
         query['type'] = params.type;
@@ -31,21 +33,24 @@ router.post('/list', function (req, res) {
             if(comment.source=='1'){
 
                var userId= comment.userId;
+               var blogId= comment.blogId;
                 userManager.find({tid:userId},function(err,users){
-                    counter++;
-
-
                     if(users.length>0){
                         comment.userName=users[0].nickName||users[0].name;
                     }else{
                         comment.userName="无";
                     }
-
-                    console.log("counter>>>"+counter);
-                    if(counter==modules.length){
-                        console.log("111");
-                        res.send(info);
-                    }
+                    //查询文章信息
+                    blogManager.findByUUID(blogId,function(err,blog){
+                        counter++;
+                        comment.blogName=blog.title;
+                        // console.log(blog)
+                        if(counter==modules.length){
+                            console.log("111");
+                            console.log(JSON.stringify(info));
+                            res.send(info);
+                        }
+                    })
                 })
             }
 

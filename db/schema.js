@@ -73,7 +73,8 @@ var commentModel=new Schema({
     date:String,// 评论时间
     type:Number,//是评论还是回复 1为评论2为回复
     pid:String,//上级评论ID
-    source:String //1:微信 2:系统
+    source:String, //1:微信 2:系统
+    order:Number  //排序
 })
 
 
