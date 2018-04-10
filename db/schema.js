@@ -67,10 +67,12 @@ var rightModel=new Schema({
 var commentModel=new Schema({
     uuid:String,
     userId:String, //用户ID
+    userName:String, //用户名称
     blogId:String, //博客ID
     content:String,//内容
     date:String,// 评论时间
     type:Number,//是评论还是回复 1为评论2为回复
+    pid:String,//上级评论ID
     source:String //1:微信 2:系统
 })
 
