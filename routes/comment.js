@@ -17,8 +17,8 @@ router.post('/list', function (req, res) {
     if (params && params.name) {
         query['name'] = new RegExp(params.name);
     }
-    if (params && params.tag) {
-        query['tag'] = params.tag;
+    if (params && params.type) {
+        query['type'] = params.type;
     }
 
     commentManager.page(currentPage, query, function (err, modules) {
@@ -36,10 +36,6 @@ router.get('/single/:uuid', function (req, res) {
 //查询指定博客下的评论
 router.get('/getComments/:blogId', function (req, res) {
     var blogId=req.params.blogId == null ? 0 : req.params.blogId;
-    // getChildren(blogId,function (comments) {
-    //     res.send(comments);
-    // });
-
     commentManager.find({blogId,type:1}, function (err, comments) {
         if(comments.length) {
             var counter=0;
