@@ -22,6 +22,9 @@ router.post('/list', function (req, res) {
     if (params && params.type) {
         query['type'] = params.type;
     }
+    if (params && params.uuid) {
+        query['uuid'] = params.uuid;
+    }
 
     var counter=0;
     commentManager.page(currentPage, query, function (err, info) {
