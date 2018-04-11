@@ -6,7 +6,7 @@
 var config = {
     mongo: {
         //数据库链接地址
-        url: 'mongodb://ef57a57894bd4:99ed58894fe04@10.0.0.25:30096/69a9aa5fdb354',
+        url: 'mongodb://62b4a3b21cff4:60ae51958af04@10.0.0.26:30097/c0c2d08b56244',
         // url : 'mongodb://localhost:27017/myBlog',
         //分页
         pageSize: 7
