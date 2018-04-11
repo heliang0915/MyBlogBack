@@ -21,9 +21,6 @@ router.post('/list',function(req,res){
     if(params&&params.tag){
         query['tag']=params.tag;
     }
-    if (params && params.uuid) {
-        query['tag'] = params.uuid;
-    }
     console.log(JSON.stringify(query));
 
     //查询文章列表
