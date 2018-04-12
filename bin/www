@@ -26,7 +26,7 @@ var options = {
 var httpsServer = https.createServer(options,app);
 
 
-var port = normalizePort(process.env.PORT || '8888');
+var port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
 
 /**
