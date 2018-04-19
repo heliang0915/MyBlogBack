@@ -111,6 +111,6 @@ function onHttpServerListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    console.log(`启动服务器${bind}`);
+    console.log(`启动https服务器${bind}`);
     debug('Listening on ' + bind);
 }
