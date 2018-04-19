@@ -44,6 +44,7 @@ router.get('/getUserInfo/:uuid', function (req, res) {
         json.uuid=module.uuid;
         json.nickName=module.nickName;
         json.roleId=module.roleId;
+        json.loginType=module.loginType;
         res.send(json);
     })
 })
