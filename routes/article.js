@@ -2,56 +2,63 @@ var express=require("express")
 var moment=require("moment");
 var cheerio=require("cheerio");
 var router=express.Router();
+
+var  channelQuery= require("../query/channelQuery");
+var  articleQuery= require("../query/articleQuery");
+
+
 var  channelManager= require("../db/channelManager");
+
 channelManager=new channelManager();
 var  blogManager=require("../db/blogManager");
 blogManager=new blogManager();
+var zanManager = require("../db/zanManager");
+zanManager = new zanManager();
+var AppConst = require("../const/APPConst");
+
 
 router.post('/list',function(req,res){
      // blogManager.setModelName("blogModel");
     var currentPage=req.body.page;
     var params=req.body.params;
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
-    // console.log("params>>>>"+JSON.stringify(params));
     var query={};
-    // query=Object.assign({},query,params);
     if(params&&params.title){
         query['title']=new RegExp(params.title);
     }
     if(params&&params.tag){
         query['tag']=params.tag;
     }
-
-    console.log(JSON.stringify(query));
-
-    //查询文章列表
-    blogManager.page(currentPage, query, function(err,info){
-        var counter=0;
-        if(info.models.length>0){
-            //获取所有分类
-            channelManager.findAll(function (err,channels){
-                info.models.forEach(function (article){
-                    //查询频道信息
-                    channelManager.findByUUID(article.tag,function (err,channel){
-                        counter++;
-                        article["channelName"]=channel.name;
-                        article["content"]=article.content.substring(0,120);
-                        if(counter==info.models.length){
-                            info.channels=channels;
-                            res.send(info);
-                        }
-                    })
-                })
-            })
+    async function getBlogList() {
+        let info = await articleQuery.articleListPromise();
+        let channels = await channelQuery.getChannelALLPromise();
+        if(info.models.length>0) {
+            for(let i=0;i<info.models.length;i++){
+               let  blog=info.models[i];
+               let channel= await channelQuery.getChannelPromise(blog.tag);
+                blog["channelName"] = channel.name;
+                blog["content"] = blog.content.substring(0, 120);
+                if(i==info.models.length-1){
+                    info.channels=channels;
+                    res.send(info);
+                }
+            }
         }else{
-            channelManager.findAll(function (err,channels){
-                info.channels=channels;
-                res.send(info);
-            });
+            info.channels=channels;
+            console.log("返回给服务")
+            res.send(info);
         }
-     }
-    )
+    }
+
+    getBlogList();
+
 })
+
+
+
+
+
+
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
     channelManager.findAll(function (err,channels){

@@ -20,8 +20,12 @@ var blogModel=new Schema({
      pic:String,//图片
      date:String, //发布时间
      pubUser:String, //发布人
+     pv:Number, //浏览量
      order:Number
 })
+
+
+
 /*定义用户模型*/
 
 var userModel=new Schema({
@@ -35,7 +39,7 @@ var userModel=new Schema({
    loginTime:String, //登录时间
    roleId:String, //角色
    pic:String, //头像
-   order:Number  //登录时间
+   order:Number  //排序用
 })
 
 //角色
@@ -77,6 +81,14 @@ var commentModel=new Schema({
     order:Number  //排序
 })
 
+/*点赞模型  根据blogId 统计的 isZan=true的个数就是点赞量*/
+var zanModel=new Schema({
+    uuid:String,
+    userId:String, //用户ID
+    blogId:String,//文章ID
+    isZan:Boolean,//是否点赞
+    order:Number  //排序
+})
 
 exports.channelModel = mongoose.model('channelModel', channelModel); //  栏目集合关联
 exports.blogModel = mongoose.model('blogModel', blogModel); //  博客集合关联
@@ -85,6 +97,7 @@ exports.roleModel=mongoose.model('roleModel',roleModel); //角色模型
 exports.menuModel=mongoose.model('menuModel',menuModel); //菜单模型
 exports.rightModel=mongoose.model('rightModel',rightModel); //权限模型
 exports.commentModel=mongoose.model('commentModel',commentModel); //用户评论/回复模型
+exports.zanModel=mongoose.model('zanModel',zanModel); //点赞
 
 
 

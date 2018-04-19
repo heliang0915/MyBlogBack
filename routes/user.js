@@ -1,9 +1,13 @@
-var express = require("express")
+var express = require("express");
+
 var router = express.Router();
 var roleManager = require("../db/roleManager");
 var userManager = require("../db/userManager");
+var zanManager = require("../db/zanManager");
 roleManager = new roleManager();
 userManager = new userManager();
+zanManager = new zanManager();
+var AppConst = require("../const/APPConst");
 
 router.post('/list', function (req, res) {
     var currentPage = req.body.page;
@@ -71,7 +75,38 @@ router.get('/delete/:uuid', function (req, res) {
 })
 
 
-
-
+//用户点赞(取消) 1:点赞 0：取消
+router.get('/zan/:blogId/:type',function (req,res) {
+    //1).如果存在则根据 type类型 设置是否点赞动作 如果type=1则进行如下操作
+    //2).从用户session中取出当前用户信息查询是否该用户在点赞表中
+    //3).创建点赞记录 并设置type值
+    // zanManager.find
+    let  {type,blogId}=req.params;
+    if(type){ //用户进行点赞
+        //从用户session中取出当前用户信息查询是否该用户在点赞表中
+        var userId=AppConst.USERID;
+        zanManager().find({
+            userId,
+            blogId
+        },(err,zans)=>{
+            if(zans.length>0){
+                let model=zans[0];
+                //当前记录存在更新值信息
+                zanManager.edit(model.uuid, model, function (err) {
+                    res.send(err == null ? "ok" : err);
+                })
+            }else{
+                let model={
+                    userId,
+                    blogId,
+                    isZan:type==1,
+                }
+                zanManager.add(model.uuid, model, function (err) {
+                    res.send(err == null ? "ok" : err);
+                })
+            }
+        })
+    }
+})
 
 module.exports = router;
