@@ -9,9 +9,7 @@ router.all('*', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-    res.render('index',{
-        title:new Date().getTime()
-    });
+    res.render('index');
 });
 
 router.get('/reload',function (req,res) {
