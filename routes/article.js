@@ -7,7 +7,6 @@ var  articleQuery= require("../query/articleQuery");
 
 var zanManager = require("../db/zanManager");
 zanManager = new zanManager();
-var AppConst = require("../const/APPConst");
 
 //获取文章列表
 router.post('/list',function(req,res){
@@ -42,13 +41,12 @@ router.post('/list',function(req,res){
         }
     }
     getBlogList();
-
 })
 
 
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    async  function  getSingle(uuid,res){
+    async  function  getSingle(uuid){
        let ary=[];
        let channels= await  channelQuery.getChannelALLPromise();
        let blog=await articleQuery.findByUUIDPromise(uuid);
@@ -117,6 +115,16 @@ router.get('/delete/:uuid',function(req,res){
      }).catch(()=>{
          res.send(err);
      })
+})
+
+//增加pv数量
+router.get('/addPv/:uuid',(req,res)=>{
+    var uuid=req.params.uuid==null?0:req.params.uuid;
+    articleQuery.addPVPromise(uuid).then(()=>{
+        res.send("ok");
+    }).catch((err)=>{
+        res.send(err);
+    })
 })
 
 module.exports=router;
