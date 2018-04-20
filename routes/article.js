@@ -2,23 +2,15 @@ var express=require("express")
 var moment=require("moment");
 var cheerio=require("cheerio");
 var router=express.Router();
-
 var  channelQuery= require("../query/channelQuery");
 var  articleQuery= require("../query/articleQuery");
 
-
-var  channelManager= require("../db/channelManager");
-
-channelManager=new channelManager();
-var  blogManager=require("../db/blogManager");
-blogManager=new blogManager();
 var zanManager = require("../db/zanManager");
 zanManager = new zanManager();
 var AppConst = require("../const/APPConst");
 
-
+//获取文章列表
 router.post('/list',function(req,res){
-     // blogManager.setModelName("blogModel");
     var currentPage=req.body.page;
     var params=req.body.params;
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
@@ -49,54 +41,48 @@ router.post('/list',function(req,res){
             res.send(info);
         }
     }
-
     getBlogList();
 
 })
 
 
-
-
-
-
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    channelManager.findAll(function (err,channels){
-        if(err){
-            res.send({});
-        }else{
-            blogManager.findByUUID(uuid,function (err,module){
-                channelManager.findByUUID(module.tag,function (err,channel){
-                    module["channelName"]=channel.name;
-                    var $=cheerio.load(module.content);
-                    var regText=/<p.*?>(.*?)<\/p>/g;
-                    var imgReg=/<img(.*?)>(.*?)<\/img>/g;
-                    var ary=[];
-                   module.content.replace(regText,function(item,small){
-                        item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
-                       var $=cheerio.load(item);
-                       var src=$("img").attr('src');
-                       var json={}
-                       if(src){
-                           json.type="image";
-                           json.text=src;
-                           ary.push(json);
-                       }else{
-                           json.type="text";
-                           json.text=item;
-                           ary.push(json);
-                       }
-                    });
-                    module.contentAry=ary;
-                    var json={
-                        channels,
-                        module
-                    }
-                    res.send(json);
-                })
-            })
+    async  function  getSingle(uuid,res){
+       let ary=[];
+       let channels= await  channelQuery.getChannelALLPromise();
+       let blog=await articleQuery.findByUUIDPromise(uuid);
+       let channel=await channelQuery.getChannelPromise(blog.tag);
+        blog["channelName"]=channel.name;
+        var $=cheerio.load(blog.content);
+        var regText=/<p.*?>(.*?)<\/p>/g;
+        blog.content.replace(regText,function(item,small){
+            item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
+            var $=cheerio.load(item);
+            var src=$("img").attr('src');
+            var json={}
+            if(src){
+                json.type="image";
+                json.text=src;
+                ary.push(json);
+            }else{
+                json.type="text";
+                json.text=item;
+                ary.push(json);
+            }
+        });
+        blog.contentAry=ary;
+        var json={
+            channels,
+            module:blog
         }
-    })
+        return json;
+    }
+
+    (async  function () {
+        let json= await  getSingle(uuid);
+         res.send(json);
+     })();
 })
 
 router.post('/save',function(req,res){
@@ -107,31 +93,30 @@ router.post('/save',function(req,res){
     var tag=article.tag;
     var pic=article.pic;
     var pubUser=article.pubUser;
-
-    if(uuid){
-        blogManager.edit(uuid,article,function (err){
-            res.send(err==null?"ok":err);
-        })
-    }else{
-        var articleModel={
-            title,
-            content,
-            tag,
-            pic,
-            date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            pubUser:pubUser==null?"张三":pubUser
-        }
-        blogManager.add(articleModel,function(err){
-            res.send(err==null?"ok":err);
-        })
+    var articleModel={
+        title,
+        content,
+        tag,
+        pic,
+        date: moment().format("YYYY-MM-DD HH:mm:ss"),
+        pubUser:pubUser==null?"张三":pubUser
     }
+
+    articleQuery.savePromise(uuid,uuid==null?articleModel:article).then((err)=>{
+        res.send("ok");
+    }).catch(()=>{
+        res.send(err);
+    })
+
 })
 
 router.get('/delete/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    blogManager.del(uuid,function (err){
-        res.send(err==null?"ok":err);
-    })
+     articleQuery.deletePromise(uuid).then((err)=>{
+         res.send("ok");
+     }).catch(()=>{
+         res.send(err);
+     })
 })
 
 module.exports=router;
