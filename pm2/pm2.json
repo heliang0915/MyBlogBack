@@ -1,0 +1,23 @@
+/**
+ * 生产环境下的部署配置
+ */
+{
+  "name"             : "blogAPI",
+  "script"           : "bin/www",
+  "log_date_format"  : "YYYY-MM-DD HH:mm:ss Z",
+  "error_file"       : "pm2/logs/error.log",
+  "out_file"         : "pm2/logs/access.log",
+  "pid_file"         : "pm2/pids/blogAPI.pid",
+  "instances"        : 6,
+  "max_memory_restart": "100M",
+  "watch"            : false,
+  "ignore_watch"      : ["[\\/\\\\]\\./", "node_modules"],
+  "merge_logs"       : true,
+  "exec_interpreter" : "node",
+  "exec_mode"        : "cluster",
+  "autorestart"      : false,
+  "vizion"           : false,
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

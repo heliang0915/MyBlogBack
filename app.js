@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+var ejs = require('ejs');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var channel = require('./routes/channel');
@@ -18,14 +19,19 @@ var wx = require('./routes/wx');
 var app = express();
 // var https = require('https');
 
+app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
+
+// app.engine('.html', ejs.__express);
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// app.use('/', index);
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
