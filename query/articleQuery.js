@@ -68,6 +68,7 @@ function deletePromise(uuid){
 function addPVPromise (uuid){
     return new Promise((resolve, reject)=>{
         articleManager.findByUUID(uuid, function (err, blog) {
+            console.log(JSON.stringify(blog));
             let pv=blog.pv==null?0:blog.pv;
             blog.pv=parseInt(pv)+1;
             this.savePromise(uuid, blog).then(()=>{
