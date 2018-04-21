@@ -35,9 +35,7 @@ function savePromise(uuid, model) {
             })
         }
     })
-
 }
-
 
 //根据UUID获取文章信息
 function findByUUIDPromise(uuid) {
@@ -67,27 +65,20 @@ function deletePromise(uuid){
 //添加 pv 数量
 function addPVPromise (uuid){
     return new Promise((resolve, reject)=>{
-        articleManager.findByUUID(uuid, function (err, blog) {
-            console.log("blog:"+JSON.stringify(blog));
-            let pv=blog.pv==null?0:blog.pv;
-            blog.pv=parseInt(pv)+1;
-            this.savePromise(uuid, blog).then(()=>{
-                resolve();
-            }).catch((err)=>{
-                reject(err)
-            })
-        });
-        // this.findByUUIDPromise(uuid).then((blog)=>{
-        //      let pv=blog.pv==null?0:blog.pv;
-        //      blog.pv=parseInt(pv)+1;
-        //      this.savePromise(uuid, blog)
-        //     resolve();
-        // }).catch((err)=>{
-        //     reject(err)
-        // })
+        this.findByUUIDPromise(uuid).then((blog)=>{
+             let pv=blog.pv==null?0:blog.pv;
+             blog.pv=parseInt(pv)+1;
+             this.savePromise(uuid, blog).then(()=>{
+                 resolve();
+             }).catch(()=>{
+                 reject(err)
+             })
+        }).catch((err)=>{
+            reject(err)
+        })
     })
 }
-
+articleListPromise
 module.exports = {
     articleListPromise,
     findByUUIDPromise,

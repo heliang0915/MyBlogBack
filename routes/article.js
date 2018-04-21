@@ -8,6 +8,7 @@ var  articleQuery= require("../query/articleQuery");
 var zanManager = require("../db/zanManager");
 zanManager = new zanManager();
 
+
 //获取文章列表
 router.post('/list',function(req,res){
     var currentPage=req.body.page;
@@ -36,7 +37,8 @@ router.post('/list',function(req,res){
             }
         }else{
             info.channels=channels;
-            console.log("返回给服务")
+            var end=new Date().getTime();
+            console.log("返回给服务"+"耗时:"+(end-start)+"ms")
             res.send(info);
         }
     }
@@ -47,29 +49,29 @@ router.post('/list',function(req,res){
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
     async  function  getSingle(uuid){
-       let ary=[];
        let channels= await  channelQuery.getChannelALLPromise();
        let blog=await articleQuery.findByUUIDPromise(uuid);
        let channel=await channelQuery.getChannelPromise(blog.tag);
         blog["channelName"]=channel.name;
-        var $=cheerio.load(blog.content);
-        var regText=/<p.*?>(.*?)<\/p>/g;
-        blog.content.replace(regText,function(item,small){
-            item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
-            var $=cheerio.load(item);
-            var src=$("img").attr('src');
-            var json={}
-            if(src){
-                json.type="image";
-                json.text=src;
-                ary.push(json);
-            }else{
-                json.type="text";
-                json.text=item;
-                ary.push(json);
-            }
-        });
-        blog.contentAry=ary;
+        // let ary=[];
+        // var $=cheerio.load(blog.content);
+        // var regText=/<p.*?>(.*?)<\/p>/g;
+        // blog.content.replace(regText,function(item,small){
+        //     item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
+        //     var $=cheerio.load(item);
+        //     var src=$("img").attr('src');
+        //     var json={}
+        //     if(src){
+        //         json.type="image";
+        //         json.text=src;
+        //         ary.push(json);
+        //     }else{
+        //         json.type="text";
+        //         json.text=item;
+        //         ary.push(json);
+        //     }
+        // });
+        // blog.contentAry=ary;
         var json={
             channels,
             module:blog
@@ -77,10 +79,14 @@ router.get('/single/:uuid',function(req,res){
         return json;
     }
 
-    (async  function () {
-        let json= await  getSingle(uuid);
-         res.send(json);
-     })();
+    getSingle(uuid).then((json)=>{
+        res.send(json);
+    })
+
+    // (async  function () {
+    //     let json= await  getSingle(uuid);
+    //      res.send(json);
+    //  })();
 })
 
 router.post('/save',function(req,res){
