@@ -67,17 +67,25 @@ function deletePromise(uuid){
 //添加 pv 数量
 function addPVPromise (uuid){
     return new Promise((resolve, reject)=>{
-        this.findByUUIDPromise(uuid).then((blog)=>{
-             let pv=blog.pv==null?0:blog.pv;
-             blog.pv=parseInt(pv)+1;
-             this.savePromise(uuid, blog)
-            resolve();
-        }).catch((err)=>{
-            reject(err)
-        })
+        articleManager.findByUUID(uuid, function (err, blog) {
+            let pv=blog.pv==null?0:blog.pv;
+            blog.pv=parseInt(pv)+1;
+            this.savePromise(uuid, blog).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err)
+            })
+        });
+        // this.findByUUIDPromise(uuid).then((blog)=>{
+        //      let pv=blog.pv==null?0:blog.pv;
+        //      blog.pv=parseInt(pv)+1;
+        //      this.savePromise(uuid, blog)
+        //     resolve();
+        // }).catch((err)=>{
+        //     reject(err)
+        // })
     })
 }
-
 
 module.exports = {
     articleListPromise,

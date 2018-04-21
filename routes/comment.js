@@ -32,7 +32,6 @@ router.post('/list', function (req, res) {
         modules.forEach(function(comment){
             //微信用户
             if(comment.source=='1'){
-
                var userId= comment.userId;
                var blogId= comment.blogId;
                 userManager.find({tid:userId},function(err,users){
@@ -47,8 +46,8 @@ router.post('/list', function (req, res) {
                         comment.blogName=blog.title;
                         // console.log(blog)
                         if(counter==modules.length){
-                            console.log("111");
-                            console.log(JSON.stringify(info));
+                            // console.log("111");
+                            // console.log(JSON.stringify(info));
                             res.send(info);
                         }
                     })
