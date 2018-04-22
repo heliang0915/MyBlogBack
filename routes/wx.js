@@ -1,23 +1,24 @@
 var express = require("express")
 var router = express.Router();
-var fetch=require("../util/fetch");
-var moment=require("moment");
-var wx=require("../config").wx;
+var fetch = require("../util/fetch");
+var moment = require("moment");
+var wx = require("../config").wx;
 var userManager = require("../db/userManager");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
+var commentQuery = require("../query/commentQuery");
 userManager = new userManager();
-var appId=wx.appId;
-var secret=wx.secret;
+var appId = wx.appId;
+var secret = wx.secret;
 
 router.get('/login/:code', function (req, res) {
-    var code=req.params.code;
+    var code = req.params.code;
     console.log(`-----------${code}`);
-    fetch(`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${secret}&js_code=${code}&grant_type=authorization_code`,req).then(function(resp,err){
+    fetch(`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${secret}&js_code=${code}&grant_type=authorization_code`, req).then(function (resp, err) {
         // res.send(resp);
-        var data=resp.data.data;
-        var openid=data.openid;
-        var session_key=data.session_key;
+        var data = resp.data.data;
+        var openid = data.openid;
+        var session_key = data.session_key;
         console.log(openid);
         res.send(data);
     });
@@ -25,14 +26,12 @@ router.get('/login/:code', function (req, res) {
 
 //用户是否注册过
 router.get('/exist/:tid', function (req, res) {
-    var tid=req.params.tid;
-
-    console.log("tid:"+tid);
-
-    userManager.find({tid:tid},function(err,models){
-        if(models.length){
+    var tid = req.params.tid;
+    console.log("tid:" + tid);
+    userManager.find({tid: tid}, function (err, models) {
+        if (models.length) {
             res.send(true);
-        }else{
+        } else {
             res.send(false);
         }
     })
@@ -50,57 +49,74 @@ router.post('/wxRegister', function (req, res) {
 
 //更新登录时间等信息
 router.get('/updateInfo/:tid', function (req, res) {
-    var tid=req.params.tid;
-    userManager.find({tid:tid},function(err,users){
-        if(users.length){
+    var tid = req.params.tid;
+    userManager.find({tid: tid}, function (err, users) {
+        if (users.length) {
             //更新用户信息
-            var user=users[0];
-            user.loginTime=moment().format("YYYY-MM-DD HH:mm:ss");
-            userManager.edit(user.uuid,user, function (err) {
+            var user = users[0];
+            user.loginTime = moment().format("YYYY-MM-DD HH:mm:ss");
+            userManager.edit(user.uuid, user, function (err) {
                 res.send(err == null ? true : err);
             })
-        }else{
+        } else {
             res.send(true);
         }
     })
 });
 
 //wx 获取文章列表
-router.post('/blogList',function(req,res){
-    var currentPage=req.body.page;
-    var params=req.body.params;
-    currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
-    var query={};
-    if(params&&params.title){
-        query['title']=new RegExp(params.title);
+router.post('/blogList', function (req, res) {
+    var currentPage = req.body.page;
+    var params = req.body.params;
+    currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
+    var query = {};
+    if (params && params.title) {
+        query['title'] = new RegExp(params.title);
     }
-    if(params&&params.tag){
-        query['tag']=params.tag;
+    if (params && params.tag) {
+        query['tag'] = params.tag;
     }
-    articleQuery.articleListPromise(currentPage, query).then((info)=>{
+
+
+    async function getArticleList() {
+        let info = await  articleQuery.articleListPromise(currentPage, query);
+        for (let module of info.models) {
+            let count = await commentQuery.getCommentCount(module.uuid)
+            module['commentSize'] = count;
+        }
+        return info;
+    }
+
+    getArticleList().then((info)=>{
         res.send(info);
-    }).catch((err)=>{
-        res.send(err);
     })
+
+    // articleQuery.articleListPromise(currentPage, query).then((info) => {
+    //     res.send(info);
+    // }).catch((err) => {
+    //     res.send(err);
+    // })
 
 });
 //wx 获取单个文章
-router.get('/blogSingle/:uuid',function(req,res){
-    var uuid=req.params.uuid==null?0:req.params.uuid;
-    async  function  getSingle(uuid){
-        let blog=await articleQuery.findByUUIDPromise(uuid);
-        let channel=await channelQuery.getChannelPromise(blog.tag);
+router.get('/blogSingle/:uuid', function (req, res) {
+    var uuid = req.params.uuid == null ? 0 : req.params.uuid;
+
+    async function getSingle(uuid) {
+        let blog = await articleQuery.findByUUIDPromise(uuid);
+        let channel = await channelQuery.getChannelPromise(blog.tag);
         //增加pv
-        let pv=blog.pv==null?0:blog.pv;
-        blog.pv=parseInt(pv)+1;
-        await articleQuery.savePromise(uuid,blog)
-        blog["channelName"]=channel.name;
-        var json={
-            module:blog
+        let pv = blog.pv == null ? 0 : blog.pv;
+        blog.pv = parseInt(pv) + 1;
+        await articleQuery.savePromise(uuid, blog)
+        blog["channelName"] = channel.name;
+        var json = {
+            module: blog
         }
         return json;
     }
-    getSingle(uuid).then((json)=>{
+
+    getSingle(uuid).then((json) => {
         res.send(json);
     })
 })
