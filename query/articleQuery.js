@@ -15,8 +15,8 @@ function articleListPromise(currentPage, query,sort) {
             } else {
                 resolve(info)
             }
-        });
-    },sort)
+        },sort);
+    })
 }
 
 function savePromise(uuid, model) {
