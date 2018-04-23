@@ -84,7 +84,7 @@ router.post('/blogList', function (req, res) {
     console.log("排行榜排序字段");
     async function getArticleList() {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
-        let allModules = await  articleQuery.articleListAllPromise(query,sort);
+        let allModules = await articleQuery.articleListAllPromise(query,sort);
         info.models=allModules;
         for (let module of info.models) {
             let count = await commentQuery.getCommentCount(module.uuid)
@@ -95,9 +95,6 @@ router.post('/blogList', function (req, res) {
             console.log("search_field>>>cv");
             info.models.sort((a,b)=>{
                 return b.commentSize-a.commentSize;
-            })
-            info.models.forEach((item)=>{
-                console.log(item.commentSize);
             })
         }
         //内存分页
@@ -110,6 +107,9 @@ router.post('/blogList', function (req, res) {
     }
     getArticleList().then((info)=>{
         res.send(info);
+    }).catch((err)=>{
+        console.log(err);
+        res.send(err);
     })
 });
 //wx 获取单个文章
