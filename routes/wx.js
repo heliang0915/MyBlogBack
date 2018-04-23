@@ -87,12 +87,12 @@ router.post('/blogList', function (req, res) {
             module['commentSize'] = count;
         }
 
-
-        info.models.sort((a,b)=>{
-            return a.commentSize-b.commentSize;
-        })
-
-
+        //按评论量排序
+        if(params.search_field=="cv"){
+            info.models.sort((a,b)=>{
+                return a.commentSize-b.commentSize;
+            })
+        }
 
         return info;
     }
