@@ -13,7 +13,7 @@ var secret = wx.secret;
 
 router.get('/login/:code', function (req, res) {
     var code = req.params.code;
-    console.log(`-----------${code}`);
+    // console.log(`-----------${code}`);
     fetch(`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${secret}&js_code=${code}&grant_type=authorization_code`, req).then(function (resp, err) {
         // res.send(resp);
         var data = resp.data.data;
@@ -41,7 +41,7 @@ router.get('/exist/:tid', function (req, res) {
 router.post('/wxRegister', function (req, res) {
     var user = req.body;
     //user:{openId,}
-    console.log(JSON.stringify(user));
+    // console.log(JSON.stringify(user));
     userManager.add(user, function (err) {
         res.send(err == null ? true : err);
     })

@@ -13,8 +13,6 @@ router.post('/list',function(req,res){
 
      var query={};
      currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
-
-     console.log(sort);
     if(params&&params.name){
         query['name']=new RegExp(params.name);
     }

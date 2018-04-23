@@ -113,7 +113,7 @@ Base.prototype.add = function (modelData, callback) {
     var tempUUID = this.getUUID();
     var newModelSchema = new ModelSchema[this.modelName]();
     this.getMaxOrder(function (err, order) {
-        console.log(order);
+        // console.log(order);
         for (var fileName in modelData) {
             newModelSchema[fileName] = modelData[fileName];
         }
