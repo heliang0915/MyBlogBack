@@ -76,10 +76,14 @@ router.post('/blogList', function (req, res) {
     if (params && params.tag) {
         query['tag'] = params.tag;
     }
-
+    //排行榜排序字段
+    let sort={};
+    if (params && params.search_field) {
+        sort[ params.search_field] =-1;
+    }
 
     async function getArticleList() {
-        let info = await  articleQuery.articleListPromise(currentPage, query);
+        let info = await  articleQuery.articleListPromise(currentPage, query,sort);
         for (let module of info.models) {
             let count = await commentQuery.getCommentCount(module.uuid)
             module['commentSize'] = count;
@@ -120,6 +124,11 @@ router.get('/blogSingle/:uuid', function (req, res) {
         res.send(json);
     })
 })
+
+//wx获取排行榜信息
+
+
+
 
 
 module.exports = router;

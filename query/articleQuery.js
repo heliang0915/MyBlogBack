@@ -2,7 +2,12 @@ var articleManager = require("../db/blogManager");
 articleManager = new articleManager();
 
 //获取文章列表
-function articleListPromise(currentPage, query) {
+function articleListPromise(currentPage, query,sort) {
+
+    let defaultSort={
+        order:-1
+    }
+    sort=sort==null?defaultSort:sort;
     return new Promise((resolve, reject) => {
         articleManager.page(currentPage, query, function (err, info) {
             if (err) {
@@ -11,7 +16,7 @@ function articleListPromise(currentPage, query) {
                 resolve(info)
             }
         });
-    })
+    },sort)
 }
 
 function savePromise(uuid, model) {
