@@ -1,8 +1,6 @@
 
-var  channelManager=require("../db/channelManager");
+var  {channelManager}=require("../db/modelManager");
 channelManager=new channelManager();
-
-
 function getChannelPromise(uuid){
     return new Promise((resolve, reject)=>{
         //查询频道信息

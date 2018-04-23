@@ -1,6 +1,6 @@
 var express=require("express")
 var router=express.Router();
-var  roleManager=require("../db/roleManager");
+var  {roleManager}=require("../db/modelManager");
 roleManager=new roleManager();
 
 router.post('/list',function(req,res){

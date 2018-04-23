@@ -1,9 +1,7 @@
 var express = require("express");
 
 var router = express.Router();
-var roleManager = require("../db/roleManager");
-var userManager = require("../db/userManager");
-var zanManager = require("../db/zanManager");
+var {roleManager,userManager,zanManager} = require("../db/modelManager");
 roleManager = new roleManager();
 userManager = new userManager();
 zanManager = new zanManager();

@@ -1,4 +1,4 @@
-var commentManager = require("../db/commentManager");
+var  {commentManager}=require("../db/modelManager");
 commentManager = new commentManager();
 
 function getCommentCount(blogId){

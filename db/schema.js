@@ -86,7 +86,10 @@ var zanModel=new Schema({
     uuid:String,
     userId:String, //用户ID
     blogId:String,//文章ID
-    isZan:Boolean,//是否点赞
+    isZan:{
+        type:Boolean,
+        default:false
+    },//是否点赞
     order:Number  //排序
 })
 

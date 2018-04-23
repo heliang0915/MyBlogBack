@@ -1,5 +1,6 @@
-var articleManager = require("../db/blogManager");
-articleManager = new articleManager();
+var  {blogManager}=require("../db/modelManager");
+console.log(blogManager);
+blogManager = new blogManager();
 
 //获取文章列表
 function articleListPromise(currentPage, query,sort,ps) {
@@ -8,7 +9,7 @@ function articleListPromise(currentPage, query,sort,ps) {
     }
     sort=sort==null?defaultSort:sort;
     return new Promise((resolve, reject) => {
-        articleManager.page(currentPage, query, function (err, info) {
+        blogManager.page(currentPage, query, function (err, info) {
             if (err) {
                 reject(err)
             } else {
@@ -24,7 +25,7 @@ function articleListAllPromise(query,sort) {
     }
     sort=sort==null?defaultSort:sort;
     return new Promise((resolve, reject) => {
-        articleManager.find(query,(err,moudles)=>{
+        blogManager.find(query,(err,moudles)=>{
             if (err) {
                 reject(err)
             } else {
@@ -38,7 +39,7 @@ function articleListAllPromise(query,sort) {
 function savePromise(uuid, model) {
     return new Promise((resolve, reject) => {
         if (uuid) {
-            articleManager.edit(uuid, model, function (err) {
+            blogManager.edit(uuid, model, function (err) {
                 if (err) {
                     reject(err)
                 } else {
@@ -47,7 +48,7 @@ function savePromise(uuid, model) {
             })
 
         } else {
-            articleManager.add(model, function (err) {
+            blogManager.add(model, function (err) {
                 if (err) {
                     reject(err)
                 } else {
@@ -61,7 +62,7 @@ function savePromise(uuid, model) {
 //根据UUID获取文章信息
 function findByUUIDPromise(uuid) {
     return new Promise((resolve, reject) => {
-        articleManager.findByUUID(uuid, function (err, module) {
+        blogManager.findByUUID(uuid, function (err, module) {
             if (err) {
                 reject(err)
             } else {
@@ -73,7 +74,7 @@ function findByUUIDPromise(uuid) {
 
 function deletePromise(uuid){
     return new Promise(((resolve, reject) => {
-        articleManager.del(uuid,function (err){
+        blogManager.del(uuid,function (err){
             if (err) {
                 reject(err)
             } else {

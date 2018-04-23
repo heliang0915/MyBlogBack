@@ -5,7 +5,7 @@ var router=express.Router();
 var  channelQuery= require("../query/channelQuery");
 var  articleQuery= require("../query/articleQuery");
 
-var zanManager = require("../db/zanManager");
+var {zanManager} = require("../db/modelManager");
 zanManager = new zanManager();
 
 

@@ -1,6 +1,6 @@
 var express=require("express")
 var router=express.Router();
-var  menuManager=require("../db/menuManager");
+var  {menuManager}=require("../db/modelManager");
 menuManager=new menuManager();
 
 router.post('/list',function(req,res){
