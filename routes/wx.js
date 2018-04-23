@@ -80,8 +80,6 @@ router.post('/blogList', function (req, res) {
     if (params && params.search_field) {
         sort[ params.search_field] =-1;
     }
-
-    console.log("排行榜排序字段");
     async function getArticleList() {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
         //普通模式下 不需要在排序评论信息的 直接返回以节省性能
