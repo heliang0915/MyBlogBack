@@ -2,8 +2,7 @@ var articleManager = require("../db/blogManager");
 articleManager = new articleManager();
 
 //获取文章列表
-function articleListPromise(currentPage, query,sort) {
-
+function articleListPromise(currentPage, query,sort,ps) {
     let defaultSort={
         order:-1
     }
@@ -15,9 +14,26 @@ function articleListPromise(currentPage, query,sort) {
             } else {
                 resolve(info)
             }
-        },sort);
+        },sort,ps);
     })
 }
+//获取文章列表
+function articleListAllPromise(query,sort) {
+    let defaultSort={
+        order:-1
+    }
+    sort=sort==null?defaultSort:sort;
+    return new Promise((resolve, reject) => {
+        articleManager.find(query,(err,moudles)=>{
+            if (err) {
+                reject(err)
+            } else {
+                resolve(moudles)
+            }
+        },sort)
+    })
+}
+
 
 function savePromise(uuid, model) {
     return new Promise((resolve, reject) => {
@@ -86,6 +102,7 @@ function addPVPromise (uuid){
 articleListPromise
 module.exports = {
     articleListPromise,
+    articleListAllPromise,
     findByUUIDPromise,
     savePromise,
     deletePromise,

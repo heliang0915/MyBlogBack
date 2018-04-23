@@ -80,20 +80,32 @@ router.post('/blogList', function (req, res) {
     if (params && params.search_field) {
         sort[ params.search_field] =-1;
     }
+
+    console.log("排行榜排序字段");
     async function getArticleList() {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
+        let allModules = await  articleQuery.articleListAllPromise(query,sort);
+        info.models=allModules;
         for (let module of info.models) {
             let count = await commentQuery.getCommentCount(module.uuid)
             module['commentSize'] = count;
         }
-
         //按评论量排序
         if(params.search_field=="cv"){
+            console.log("search_field>>>cv");
             info.models.sort((a,b)=>{
-                return a.commentSize-b.commentSize;
+                return b.commentSize-a.commentSize;
+            })
+            info.models.forEach((item)=>{
+                console.log(item.commentSize);
             })
         }
-
+        //内存分页
+        let pageSize=info.pageSize;
+        let start=pageSize*(currentPage-1);
+        let end=currentPage*pageSize;
+        end=end>info.total?info.total:end;
+        info.models=info.models.slice(start,end);
         return info;
     }
     getArticleList().then((info)=>{

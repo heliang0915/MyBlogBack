@@ -196,12 +196,20 @@ Base.prototype.findAll = function (callback) {
 }
 
 
-Base.prototype.find = function (data, callback) {
+Base.prototype.find = function (data, callback,sortFile) {
     var self=this;
     callback = callback == undefined ? function () {
     } : callback;
 
-    model[this.modelName].find(data, function (err, models) {
+    var query=model[self.modelName].find(data);
+    //是否关联查询
+    var desc = {};
+    desc["order"] = -1;
+    if (sortFile) {
+        desc = sortFile;
+    }
+    query.sort(desc);
+    query.exec(function (err, models) {
         if (err) {
             callback(err);
             // errLogger.error(err);
@@ -212,7 +220,7 @@ Base.prototype.find = function (data, callback) {
 }
 
 //分页
-Base.prototype.page = function (currentPage, data, callback, sortFile,ps) {
+Base.prototype.page = function (currentPage, data, callback, sortFile,ps,populate) {
     var self=this;
     //查询总数
     this.count(data, function (err, total) {
@@ -229,6 +237,10 @@ Base.prototype.page = function (currentPage, data, callback, sortFile,ps) {
             }
             // console.log(model[self.modelName]);
             var query=model[self.modelName].find(data);
+            //是否关联查询
+            if(populate){
+                query.populate(populate);
+            }
             query.sort(desc);
             query.skip(start);
             query.limit(pageSize);
