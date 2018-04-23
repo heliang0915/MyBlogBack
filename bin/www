@@ -39,7 +39,7 @@ var server = http.createServer(app);
  */
 
 server.listen(port);
-httpsServer.listen(443);
+httpsServer.listen('443');
 httpsServer.on('listening',onHttpServerListening)
 httpsServer.on('error',onError);
 server.on('error', onError);
