@@ -93,6 +93,8 @@ router.get('/getChildMenu/:uuid',function(req,res){
 
                            reslove(modules);
                         }
+                },{
+                    order:1
                 });
             })
        }
