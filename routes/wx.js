@@ -79,7 +79,7 @@ router.post('/blogList', function (req, res) {
     //排行榜排序字段
     let sort={};
     if (params && params.search_field) {
-        sort[ params.search_field] =1;
+        sort[ params.search_field] =-1;
     }
     async function getArticleList() {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
@@ -92,13 +92,6 @@ router.post('/blogList', function (req, res) {
     getArticleList().then((info)=>{
         res.send(info);
     })
-
-    // articleQuery.articleListPromise(currentPage, query).then((info) => {
-    //     res.send(info);
-    // }).catch((err) => {
-    //     res.send(err);
-    // })
-
 });
 //wx 获取单个文章
 router.get('/blogSingle/:uuid', function (req, res) {
