@@ -13,7 +13,6 @@ var secret = wx.secret;
 
 router.get('/login/:code', function (req, res) {
     var code = req.params.code;
-    // console.log(`-----------${code}`);
     fetch(`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${secret}&js_code=${code}&grant_type=authorization_code`, req).then(function (resp, err) {
         // res.send(resp);
         var data = resp.data.data;
@@ -87,6 +86,14 @@ router.post('/blogList', function (req, res) {
             let count = await commentQuery.getCommentCount(module.uuid)
             module['commentSize'] = count;
         }
+
+
+        info.models.sort((a,b)=>{
+            return a.commentSize-b.commentSize;
+        })
+
+
+
         return info;
     }
     getArticleList().then((info)=>{
@@ -96,7 +103,6 @@ router.post('/blogList', function (req, res) {
 //wx 获取单个文章
 router.get('/blogSingle/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
-
     async function getSingle(uuid) {
         let blog = await articleQuery.findByUUIDPromise(uuid);
         let channel = await channelQuery.getChannelPromise(blog.tag);
@@ -110,7 +116,6 @@ router.get('/blogSingle/:uuid', function (req, res) {
         }
         return json;
     }
-
     getSingle(uuid).then((json) => {
         res.send(json);
     })
