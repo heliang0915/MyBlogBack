@@ -83,10 +83,16 @@ router.post('/blogList', function (req, res) {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
         //普通模式下 不需要在排序评论信息的 直接返回以节省性能
         if(params.search_field==null||params.search_field!="cv"){
+
             for (let module of info.models) {
                 let count = await commentQuery.getCommentCount(module.uuid)
                 module['commentSize'] = count;
             }
+
+            console.log("最快模式...");
+
+
+
             return info;
         }else{
             //按评论量排序
@@ -106,6 +112,7 @@ router.post('/blogList', function (req, res) {
             let end=currentPage*pageSize;
             end=end>info.total?info.total:end;
             info.models=info.models.slice(start,end);
+            console.log("内存分页模式...");
             return info;
         }
 
