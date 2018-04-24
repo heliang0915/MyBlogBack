@@ -7,6 +7,7 @@ var {userManager} = require("../db/modelManager");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
 var commentQuery = require("../query/commentQuery");
+var zanQuery = require("../query/zanQuery");
 userManager = new userManager();
 var appId = wx.appId;
 var secret = wx.secret;
@@ -29,7 +30,7 @@ router.get('/exist/:tid', function (req, res) {
     console.log("tid:" + tid);
     userManager.find({tid: tid}, function (err, models) {
         if (models.length) {
-            res.send(true);
+            res.send(models[0].uuid);
         } else {
             res.send(false);
         }
@@ -39,10 +40,8 @@ router.get('/exist/:tid', function (req, res) {
 //微信注册登录
 router.post('/wxRegister', function (req, res) {
     var user = req.body;
-    //user:{openId,}
-    // console.log(JSON.stringify(user));
-    userManager.add(user, function (err) {
-        res.send(err == null ? true : err);
+    userManager.add(user, function (err,module) {
+        res.send(err == null ? module.uuid : err);
     })
 });
 
@@ -138,4 +137,17 @@ router.get('/blogSingle/:uuid', function (req, res) {
         res.send(json);
     })
 })
+//点赞动作
+router.get('/blogZan/:userId/:blogId/:isZan', function (req, res) {
+    var {userId,blogId,isZan} = req.params;
+    zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
+        res.send('ok')
+    }).catch((err)=>{
+        res.send(err)
+    })
+});
+
+
+
+
 module.exports = router;

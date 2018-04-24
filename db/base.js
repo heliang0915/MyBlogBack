@@ -112,6 +112,7 @@ Base.prototype.add = function (modelData, callback) {
     /*获取uuid*/
     var tempUUID = this.getUUID();
     var newModelSchema = new ModelSchema[this.modelName]();
+    var _this=this;
     this.getMaxOrder(function (err, order) {
         // console.log(order);
         for (var fileName in modelData) {
@@ -126,8 +127,10 @@ Base.prototype.add = function (modelData, callback) {
                 console.log("新增出现错误：" + err);
                 // errLogger.error(err);
             } else {
-                callback(null);
-                console.log("插入成功");
+                _this.findByUUID(tempUUID,(err,module)=>{
+                    callback(null,module);
+                    console.log("插入成功");
+                })
             }
         });
     })
