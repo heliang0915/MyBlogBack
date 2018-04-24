@@ -1,5 +1,4 @@
 var  {blogManager}=require("../db/modelManager");
-console.log(blogManager);
 blogManager = new blogManager();
 
 //获取文章列表

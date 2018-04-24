@@ -24,9 +24,7 @@ router.post('/list', function (req, res) {
 
     var counter=0;
     commentManager.page(currentPage, query, function (err, info) {
-
         var modules=info.models;
-        console.log(modules);
         modules.forEach(function(comment){
             //微信用户
             if(comment.source=='1'){
