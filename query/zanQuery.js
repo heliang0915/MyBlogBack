@@ -41,6 +41,18 @@ function getZanByUserIdAndBlogId(userId,blogId) {
     })
 }
 
+function getZanCountByBlogId(blogId) {
+    return new Promise((resolve, reject)=>{
+        zanManager.find({blogId},(err,zanModules)=>{
+            if (err) {
+                reject(err)
+            } else {
+                resolve(zanModules.length)
+            }
+        })
+    })
+}
+
 //点击赞或取消赞
 async function changeZanPromise(userId,blogId,isZan){
     //1.根据userId和blogId查询是否有点赞记录
@@ -74,5 +86,6 @@ async  function isZanPromise(userId,blogId) {
 module.exports={
     savePromise,
     isZanPromise,
+    getZanCountByBlogId,
     changeZanPromise
 }

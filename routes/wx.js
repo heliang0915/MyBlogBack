@@ -96,24 +96,23 @@ router.post('/blogList', function (req, res) {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
         //普通模式下 不需要在排序评论信息的 直接返回以节省性能
         if(params.search_field==null||params.search_field!="cv"){
-
             for (let module of info.models) {
-                let count = await commentQuery.getCommentCount(module.uuid)
+                let count = await commentQuery.getCommentCount(module.uuid);
+                let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
                 module['commentSize'] = count;
+                module['zanSize'] = zanCount;
             }
-
             console.log("最快模式...");
-
-
-
             return info;
         }else{
             //按评论量排序
             let allModules = await articleQuery.articleListAllPromise(query,sort);
             info.models=allModules;
             for (let module of info.models) {
-                let count = await commentQuery.getCommentCount(module.uuid)
+                let count = await commentQuery.getCommentCount(module.uuid);
+                let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
                 module['commentSize'] = count;
+                module['zanSize'] = zanCount;
             }
             //按评论量排序
             info.models.sort((a,b)=>{

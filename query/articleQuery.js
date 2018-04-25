@@ -99,7 +99,7 @@ function addPVPromise (uuid){
         })
     })
 }
-articleListPromise
+
 module.exports = {
     articleListPromise,
     articleListAllPromise,
