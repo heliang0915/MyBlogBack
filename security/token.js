@@ -54,8 +54,17 @@ var token={
             return true;
         }
         return false;
+    },
+    getByKey:function (token,key) {
+        let isCheck=this.checkToken(token);
+        if(isCheck){
+            let obj=this.decodeToken(token);
+            let val=obj.payload.data[key];
+            return val;
+        }else{
+            return "";
+        }
     }
-
 }
 
 

@@ -60,8 +60,19 @@ async function changeZanPromise(userId,blogId,isZan){
         });
     }
 }
+//根据用户id和blogId获取当前文章是否点赞
+async  function isZanPromise(userId,blogId) {
+    let modules=await getZanByUserIdAndBlogId(userId,blogId);
+    if(modules.length>0){
+        let module=modules[0];
+        return module.isZan;
+    }else{
+       return false;
+    }
+}
 
 module.exports={
     savePromise,
+    isZanPromise,
     changeZanPromise
 }

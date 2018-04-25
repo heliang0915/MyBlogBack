@@ -157,14 +157,27 @@ router.get('/blogSingle/:uuid', function (req, res) {
         res.send(json);
     })
 })
+
+
+router.post('/getZan',function (req,res) {
+    var {token,blogId} = req.body;
+    let userId=tokenUtil.getByKey(token,"userId");
+    if(userId){
+        zanQuery.isZanPromise(userId,blogId).then((isZan)=>{
+            res.send(isZan)
+        }).catch((err)=>{
+            res.send(err)
+        })
+    }else{
+        res.send(false);
+    }
+})
+
 //点赞动作
 router.post('/blogZan', function (req, res) {
     var {token,blogId,isZan} = req.body;
-    let isCheck=tokenUtil.checkToken(token);
-    if(isCheck){
-        console.log("检测isCheck"+isCheck);
-        let obj=tokenUtil.decodeToken(token);
-        let userId=obj.payload.data.userId;
+    let userId=tokenUtil.getByKey(token,"userId");
+    if(userId){
         console.log(`userId::${userId}`);
         zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
             res.send('ok')
