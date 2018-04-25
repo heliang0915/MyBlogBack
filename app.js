@@ -16,6 +16,7 @@ var comment = require('./routes/comment');
 var wx = require('./routes/wx');
 
 var app = express();
+var loginFilter=[''];
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
@@ -32,6 +33,7 @@ app.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
+
 app.use('/', index);
 app.use('/channel', channel);
 app.use('/editor', editor);

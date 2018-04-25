@@ -8,6 +8,8 @@ var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
 var commentQuery = require("../query/commentQuery");
 var zanQuery = require("../query/zanQuery");
+var tokenUtil=require("../security/token")
+
 userManager = new userManager();
 var appId = wx.appId;
 var secret = wx.secret;
@@ -17,9 +19,7 @@ router.get('/login/:code', function (req, res) {
     fetch(`https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${secret}&js_code=${code}&grant_type=authorization_code`, req).then(function (resp, err) {
         // res.send(resp);
         var data = resp.data.data;
-        var openid = data.openid;
-        var session_key = data.session_key;
-        console.log(openid);
+
         res.send(data);
     });
 })
@@ -30,7 +30,9 @@ router.get('/exist/:tid', function (req, res) {
     console.log("tid:" + tid);
     userManager.find({tid: tid}, function (err, models) {
         if (models.length) {
-            res.send(models[0].uuid);
+            //创建token
+            let tokenStr=createUserToken(models[0].uuid);
+            res.send(tokenStr);
         } else {
             res.send(false);
         }
@@ -41,9 +43,20 @@ router.get('/exist/:tid', function (req, res) {
 router.post('/wxRegister', function (req, res) {
     var user = req.body;
     userManager.add(user, function (err,module) {
-        res.send(err == null ? module.uuid : err);
+        //创建token
+        let tokenStr=createUserToken(module.uuid);
+        // res.send(tokenStr);
+        res.send(err == null ? tokenStr: err);
     })
 });
+
+function createUserToken(userId){
+    let tokenStr=tokenUtil.createToken({
+        userId
+    },Date.now()/1000+24*3600);
+    console.log("生成token成功");
+    return tokenStr;
+}
 
 //更新登录时间等信息
 router.get('/updateInfo/:tid', function (req, res) {
@@ -145,16 +158,21 @@ router.get('/blogSingle/:uuid', function (req, res) {
     })
 })
 //点赞动作
-router.get('/blogZan/:userId/:blogId/:isZan', function (req, res) {
-    var {userId,blogId,isZan} = req.params;
-    zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
-        res.send('ok')
-    }).catch((err)=>{
-        res.send(err)
-    })
+router.post('/blogZan', function (req, res) {
+    var {token,blogId,isZan} = req.body;
+    let isCheck=tokenUtil.checkToken(token);
+    if(isCheck){
+        console.log("检测isCheck"+isCheck);
+        let obj=tokenUtil.decodeToken(token);
+        let userId=obj.payload.data.userId;
+        console.log(`userId::${userId}`);
+        zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
+            res.send('ok')
+        }).catch((err)=>{
+            res.send(err)
+        })
+    }else{
+        res.send('false')
+    }
 });
-
-
-
-
 module.exports = router;
