@@ -6,7 +6,7 @@
 var  {blogManager}=require("../db/modelManager");
 var  config=require("../config");
 var  cache=require("../cache/cache");
-var  Cache=require("../const/WxConst");
+var  cacheConst=require("../const/WxConst");
 blogManager = new blogManager();
 
 let blogCache={
@@ -14,8 +14,7 @@ let blogCache={
         return new Promise((resolve, reject)=>{
             cache.exists(`${Cache.BLOG}:all`,(err,ext)=>{
                 if(ext){
-                    cache.get(`${Cache.BLOG}:all`,(err,modules)=>{
-
+                    cache.get(`${cacheConst.BLOG}:all`,(err,modules)=>{
                         // console.log(modules);
                         var pageSize = ps||config.mongo.pageSize;
                         let total=modules.length;
