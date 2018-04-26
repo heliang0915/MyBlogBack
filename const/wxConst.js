@@ -3,4 +3,5 @@ const Cache={
     CHANNEL:"channel"
 }
 
-exports.Cache=Cache;
+
+module.exports=Cache;

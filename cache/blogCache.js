@@ -6,7 +6,7 @@
 var  {blogManager}=require("../db/modelManager");
 var  config=require("../config");
 var  cache=require("../cache/cache");
-var  {Cache}=require("../const/WxConst");
+var  Cache=require("../const/WxConst");
 blogManager = new blogManager();
 
 let blogCache={
