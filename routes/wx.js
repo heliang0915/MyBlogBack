@@ -7,8 +7,9 @@ var {userManager} = require("../db/modelManager");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
 var commentQuery = require("../query/commentQuery");
+var blogCache = require("../cache/blogCache");
 var zanQuery = require("../query/zanQuery");
-var tokenUtil=require("../security/token")
+var tokenUtil=require("../security/token");
 
 userManager = new userManager();
 var appId = wx.appId;
@@ -145,11 +146,13 @@ router.get('/blogSingle/:uuid', function (req, res) {
         //增加pv
         let pv = blog.pv == null ? 0 : blog.pv;
         blog.pv = parseInt(pv) + 1;
-        await articleQuery.savePromise(uuid, blog)
+        await articleQuery.savePromise(uuid, blog);
         blog["channelName"] = channel.name;
         var json = {
             module: blog
         }
+        //更新blog缓存
+        blogCache.reload();
         return json;
     }
     getSingle(uuid).then((json) => {

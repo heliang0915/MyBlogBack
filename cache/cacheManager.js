@@ -12,6 +12,7 @@ let cacheManager={
             let lunchFn = `this.${key}All();`
             eval(lunchFn)
         }
+        return this;
     },
     createFns(){
         cacheAry.forEach((config)=>{

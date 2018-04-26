@@ -222,13 +222,12 @@ Base.prototype.find = function (data, callback,sortFile) {
 }
 
 //分页
-Base.prototype.page = function (currentPage, data, callback, sortFile,ps,populate) {
+Base.prototype.page = function (currentPage, data, callback, sortFile,ps) {
     var self=this;
     //查询总数
     this.count(data, function (err, total) {
         if (err) {
             callback(err);
-            // errLogger.error(err);
         } else {
             var pageSize = ps||config.mongo.pageSize;
             var start = (parseFloat(currentPage) - 1) * pageSize;
@@ -257,12 +256,6 @@ Base.prototype.page = function (currentPage, data, callback, sortFile,ps,populat
                     callback(null, info);
                 }
             })
-
-
-
-
-
-
         }
 
 
