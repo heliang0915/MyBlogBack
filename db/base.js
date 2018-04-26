@@ -5,6 +5,7 @@ var uuid = require('node-uuid');
 // var modelPath = "./";
 //全局配置对象
 var config = require('../config');
+var cacheManager = require('../cache/cache');
 
 //获取users的schema
 // var modelName;
@@ -21,13 +22,12 @@ function Base(modelName){
             if (err) {
                 callback(err);
             } else {
-                callback(null, self.parseModels(models));
+                let modelList= self.parseModels(models);
+                callback(null, modelList);
             }
         });
-
     }
     this.getDefaultModel=function(){
-        console.log("getDefaultModel>>>>"+this.modelName);
         var defaultModel={};
         var table=model[this.modelName].schema.obj;
         Object.keys(table).forEach(function (key){
@@ -67,7 +67,6 @@ function Base(modelName){
         })
         return ary;
     }
-
 
 }
 //返回最大的max
@@ -238,12 +237,7 @@ Base.prototype.page = function (currentPage, data, callback, sortFile,ps,populat
             if (sortFile) {
                 desc = sortFile;
             }
-            // console.log(model[self.modelName]);
             var query=model[self.modelName].find(data);
-            //是否关联查询
-            if(populate){
-                query.populate(populate);
-            }
             query.sort(desc);
             query.skip(start);
             query.limit(pageSize);
@@ -264,7 +258,14 @@ Base.prototype.page = function (currentPage, data, callback, sortFile,ps,populat
                 }
             })
 
+
+
+
+
+
         }
+
+
     });
 }
 /*根据uuid查询单条数据*/

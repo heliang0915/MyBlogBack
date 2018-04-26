@@ -5,7 +5,7 @@ var {roleManager,userManager,zanManager} = require("../db/modelManager");
 roleManager = new roleManager();
 userManager = new userManager();
 zanManager = new zanManager();
-var AppConst = require("../const/APPConst");
+// var AppConst = require("../const/APPConst");
 
 router.post('/list', function (req, res) {
     var currentPage = req.body.page;
@@ -82,7 +82,7 @@ router.get('/zan/:blogId/:type',function (req,res) {
     let  {type,blogId}=req.params;
     if(type){ //用户进行点赞
         //从用户session中取出当前用户信息查询是否该用户在点赞表中
-        var userId=AppConst.USERID;
+        var userId="29cc47047bb9497487ce2de4adae502a";
         zanManager().find({
             userId,
             blogId

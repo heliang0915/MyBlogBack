@@ -1,40 +1,42 @@
-/* 缓存 */
-const redis = require('redis');
-const redisConf= require('../config');
-let cache={
-    client:null,
-    connect(){
-        this.client =redis.createClient(redisConf.redis)
-        this.client.on("error", function (err) {
-            console.log("Error " + err);
-        });
-        this.client.on('ready', function () {
-            console.log('redisCache connection succeed');
-        });
+let cache=require('./cache');
+let {blogManager,channelManager}=require('../db/modelManager');
+let cacheAry=[{"blog":"文章"},{"channel":"频道"}];
+blogManager = new blogManager();
+channelManager = new channelManager();
+
+let cacheManager={
+    init(){
+        this.createFns();
+        for(let item of cacheAry){
+            let key=Object.keys(item)[0];
+            let lunchFn = `this.${key}All();`
+            eval(lunchFn)
+        }
     },
-    set(key,obj,callback){
-        let value=JSON.stringify(obj);
-        this.client.set(key,value,callback);
-    },
-    get(key,callback){
-        this.client.get(key,(err,value)=>{
-            let obj=JSON.parse(value)
-            callback(err,obj);
-        });
-    },
-    init() {
-        //创建连接
-        this.connect();
-        return this;
+    createFns(){
+        cacheAry.forEach((config)=>{
+            let key=Object.keys(config)[0];
+            let val=config[key];
+
+            let fn=`
+            let fn= ()=>{
+                 //加载${val}信息
+                // return new Promise((resolve, reject)=> {
+                    ${key}Manager.findAll(function (err, models) {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            cache.set("${key}:all", models, (err) => {
+                                console.log(err==null?"加载[${val}]缓存["+models.length+"]个":err);
+                            })
+                        }
+                    });
+                // });
+            }
+             cacheManager['${key}All']=fn;  
+            `;
+            eval(fn)
+        })
     }
 }
-let instance=cache.init();
-instance.set('name',[{name:"张三"}],(err)=>{
-     console.log(err);
-})
-instance.get('name',(err,obj)=>{
-    console.log(JSON.stringify(obj));
-})
-
-
-module.exports=cache.init();
+module.exports=cacheManager.init();

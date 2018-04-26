@@ -14,6 +14,7 @@ var role = require('./routes/role');
 var right = require('./routes/right');
 var comment = require('./routes/comment');
 var wx = require('./routes/wx');
+var cacheManager= require('./cache/cacheManager');
 
 var app = express();
 var loginFilter=[''];

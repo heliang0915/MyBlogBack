@@ -47,7 +47,7 @@ function getZanCountByBlogId(blogId) {
             if (err) {
                 reject(err)
             } else {
-                console.log(`zanModules>>>>>>>>>>>>>${JSON.stringify(zanModules)}`);
+                // console.log(`zanModules>>>>>>>>>>>>>${JSON.stringify(zanModules)}`);
                 resolve(zanModules.length)
             }
         })

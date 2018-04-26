@@ -1,4 +1,6 @@
 var  {blogManager}=require("../db/modelManager");
+var  blogCache=require("../cache/blogCache");
+var  {Cache}=require("../const/WxConst");
 blogManager = new blogManager();
 
 //获取文章列表
@@ -7,15 +9,33 @@ function articleListPromise(currentPage, query,sort,ps) {
         order:-1
     }
     sort=sort==null?defaultSort:sort;
-    return new Promise((resolve, reject) => {
-        blogManager.page(currentPage, query, function (err, info) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(info)
-            }
-        },sort,ps);
-    })
+
+    return blogCache.page(currentPage, query,sort,ps);
+    //return new Promise((resolve, reject) => {
+        //缓存查询
+      //  blogCache.page(currentPage, query,sort,ps)
+
+        // cache.exists(`${Cache.BLOG}:all`,(err,ext)=>{
+        //     if(ext){
+        //         cache.get(`${Cache.BLOG}:all`,(err,modules)=>{
+        //
+        //
+        //
+        //
+        //
+        //         })
+        //     }else{
+        //         blogManager.page(currentPage, query, function (err, info) {
+        //             if (err) {
+        //                 reject(err)
+        //             } else {
+        //                 resolve(info)
+        //             }
+        //         },sort,ps);
+        //     }
+        // })
+
+    // })
 }
 //获取文章列表
 function articleListAllPromise(query,sort) {
