@@ -29,8 +29,12 @@ let cache={
     }
 }
 let instance=cache.init();
-instance.set('name','张',(err)=>{
+instance.set('name',[{name:"张三"}],(err)=>{
      console.log(err);
 })
+instance.get('name',(err,obj)=>{
+    console.log(JSON.stringify(obj));
+})
+
 
 module.exports=cache.init();
