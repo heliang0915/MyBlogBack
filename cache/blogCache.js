@@ -9,7 +9,6 @@ var cacheManager=require("../cache/cacheManager");
 var  cache=require("../cache/cache");
 var  queryParse=require("../cache/queryParse");
 var  cacheConst=require("../const/WxConst");
-
 blogManager = new blogManager();
 
 let blogCache={
