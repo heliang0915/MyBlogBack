@@ -1,1 +1,1 @@
-./mongod -f /etc/mongod.conf
+mongod -f /etc/mongod.conf
