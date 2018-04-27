@@ -33,17 +33,4 @@ let cache={
         return this;
     }
 }
-
-// let instance=cache.init();
-// instance.set('name',[{name:"张三"}],(err)=>{
-//      console.log(err);
-// })
-//
-// instance.exists('name2',(err,res)=>{
-//     console.log(res);
-// })
-// instance.get('name',(err,obj)=>{
-//     console.log(JSON.stringify(obj));
-// })
-
 module.exports=cache.init();

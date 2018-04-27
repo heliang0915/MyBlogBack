@@ -6,15 +6,18 @@ channelManager = new channelManager();
 
 let cacheManager={
     init(){
-        this.createFns();
+        this.createCacheFns();
+        this.reloadAll();
+        return this;
+    },
+    reloadAll(){
         for(let item of cacheAry){
             let key=Object.keys(item)[0];
             let lunchFn = `this.${key}All();`
             eval(lunchFn)
         }
-        return this;
     },
-    createFns(){
+    createCacheFns(){
         cacheAry.forEach((config)=>{
             let key=Object.keys(config)[0];
             let val=config[key];
