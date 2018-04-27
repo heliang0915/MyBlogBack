@@ -183,7 +183,6 @@ Base.prototype.del = function (uuids, callback) {
                 console.log("删除出现错误：" + err);
             } else {
                 //删除
-                console.log("modelSchema>"+modelSchema);
                 modelSchema.remove();
                 callback(null);
                 console.log("删除成功");

@@ -8,7 +8,7 @@ function articleListPromise(currentPage, query,sort,ps) {
         order:-1
     }
     sort=sort==null?defaultSort:sort;
-    console.log(blogCache);
+    // console.log(blogCache);
     return blogCache.page(currentPage, query,sort,ps);
 }
 //获取文章列表
