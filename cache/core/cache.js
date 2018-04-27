@@ -1,6 +1,6 @@
 /* 缓存 */
 const redis = require('redis');
-const redisConf= require('../config');
+const redisConf= require('../../config');
 let cache={
     client:null,
     connect(){

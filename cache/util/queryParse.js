@@ -1,6 +1,8 @@
-
+/**
+ *  缓存查询使用 查询
+ *
+ */
 let query={
-
     filterByQuery:(query,modules)=>{
         return modules.filter((item)=>{
             let flag=true;

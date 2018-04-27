@@ -7,7 +7,7 @@ var {userManager} = require("../db/modelManager");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
 var commentQuery = require("../query/commentQuery");
-var blogCache = require("../cache/blogCache");
+var {blogCache} = require("../cache/modelCache");
 var zanQuery = require("../query/zanQuery");
 var tokenUtil=require("../security/token");
 

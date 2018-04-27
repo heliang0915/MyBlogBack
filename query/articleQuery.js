@@ -1,5 +1,5 @@
 var  {blogManager}=require("../db/modelManager");
-var  blogCache=require("../cache/blogCache");
+var  {blogCache}=require("../cache/modelCache");
 blogManager = new blogManager();
 
 //获取文章列表
@@ -8,6 +8,7 @@ function articleListPromise(currentPage, query,sort,ps) {
         order:-1
     }
     sort=sort==null?defaultSort:sort;
+    console.log(blogCache);
     return blogCache.page(currentPage, query,sort,ps);
 }
 //获取文章列表

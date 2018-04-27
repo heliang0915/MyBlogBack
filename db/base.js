@@ -5,7 +5,7 @@ var uuid = require('node-uuid');
 // var modelPath = "./";
 //全局配置对象
 var config = require('../config');
-var cacheManager = require('../cache/cache');
+var cacheManager = require('../cache/core/cache');
 
 //获取users的schema
 // var modelName;

@@ -1,9 +1,21 @@
 let cache=require('./cache');
-let {blogManager,channelManager}=require('../db/modelManager');
-let cacheAry=[{"blog":"文章"},{"channel":"频道"}];
-blogManager = new blogManager();
-channelManager = new channelManager();
+var  modelManager=require("../../db/modelManager");
+let {cacheAry}=require("../const/cacheConst");
 
+
+//初始化Manager 做new的动作 如：blogManager=new blogManager();
+for(let manager in modelManager){
+    let managerStr=`
+        var ${manager} =modelManager.${manager} ; 
+        ${manager}=new ${manager}();
+             `;
+
+    eval(managerStr);
+}
+
+
+
+//将查询全部动作 放入这里
 let cacheManager={
     init(){
         this.createCacheFns();
@@ -23,9 +35,8 @@ let cacheManager={
             let val=config[key];
 
             let fn=`
-            let fn= ()=>{
+            let ${key}All= ()=>{
                  //加载${val}信息
-                // return new Promise((resolve, reject)=> {
                     ${key}Manager.findAll(function (err, models) {
                         if (err) {
                             reject(err)
@@ -35,9 +46,8 @@ let cacheManager={
                             })
                         }
                     });
-                // });
             }
-             cacheManager['${key}All']=fn;  
+             cacheManager['${key}All']=${key}All;  
             `;
             eval(fn)
         })
