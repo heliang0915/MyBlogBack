@@ -8,7 +8,8 @@ var  config=require("../config");
 var cacheManager=require("../cache/cacheManager");
 var  cache=require("../cache/cache");
 var  queryParse=require("../cache/queryParse");
-// var  cacheConst=require("../const/WxConst");
+var  cacheConst=require("../cache/WxConst");
+console.log(`cacheConst:${cacheConst.BLOG}`)
 blogManager = new blogManager();
 
 let blogCache={
