@@ -9,16 +9,14 @@ var cacheManager=require("../cache/cacheManager");
 var  cache=require("../cache/cache");
 var  queryParse=require("../cache/queryParse");
 var  cacheConst=require("../cache/cacheConst");
-console.log(`cacheConst:${cacheConst.BLOG}`)
 blogManager = new blogManager();
-
 let blogCache={
     //内存分页
     page(currentPage, query,sort,ps){
         return new Promise((resolve, reject)=>{
-            cache.exists(`blog:all`,(err,ext)=>{
+            cache.exists(`${cacheConst.BLOG}:all`,(err,ext)=>{
                 if(ext){
-                    cache.get(`blog:all`,(err,modules)=>{
+                    cache.get(`${cacheConst.BLOG}:all`,(err,modules)=>{
                         var pageSize = ps||config.mongo.pageSize;
                         let total=modules.length;
                         let start=pageSize*(currentPage-1);
