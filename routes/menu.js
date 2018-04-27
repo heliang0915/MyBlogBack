@@ -86,7 +86,6 @@ router.get('/getChildMenu/:uuid',function(req,res){
        function getChild(uuid){
             return new Promise(function (reslove,reject){
                 menuManager.find({"parentId":uuid},function(err,modules){
-                    // console.log(modules);
                         if(err){
                             reject(err);
                         }else{

@@ -185,7 +185,6 @@ router.post('/blogZan', function (req, res) {
     var {token,blogId,isZan} = req.body;
     let userId=tokenUtil.getByKey(token,"userId");
     if(userId){
-        console.log(`userId::${userId}`);
         zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
             res.send('ok')
         }).catch((err)=>{

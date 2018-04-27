@@ -40,10 +40,7 @@ router.post('/list', function (req, res) {
                     blogManager.findByUUID(blogId,function(err,blog){
                         counter++;
                         comment.blogName=blog.title;
-                        // console.log(blog)
                         if(counter==modules.length){
-                            // console.log("111");
-                            // console.log(JSON.stringify(info));
                             res.send(info);
                         }
                     })

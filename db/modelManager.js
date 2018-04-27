@@ -10,6 +10,5 @@ modules.forEach(function (item,index){
         exports.${fnPrefix}Manager = ${fnPrefix}Manager;
         `
     eval(fn);
-    // console.log(fn);
 });
 

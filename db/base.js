@@ -113,7 +113,6 @@ Base.prototype.add = function (modelData, callback) {
     var newModelSchema = new ModelSchema[this.modelName]();
     var _this=this;
     this.getMaxOrder(function (err, order) {
-        // console.log(order);
         for (var fileName in modelData) {
             newModelSchema[fileName] = modelData[fileName];
         }
@@ -239,25 +238,19 @@ Base.prototype.page = function (currentPage, data, callback, sortFile,ps) {
             query.sort(desc);
             query.skip(start);
             query.limit(pageSize);
-
             query.exec(function (err, models) {
-                // console.log("执行前...."+self.parseModels);
                 var info={
                     total,
                     pageSize,
                     models:self.parseModels(models)
                 }
-                // console.log("page执行完毕...."+info);
                 if (err) {
                     callback(err);
-                    // errLogger.error(err);
                 } else {
                     callback(null, info);
                 }
             })
         }
-
-
     });
 }
 /*根据uuid查询单条数据*/

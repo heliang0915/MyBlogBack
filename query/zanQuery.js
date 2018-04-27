@@ -58,7 +58,7 @@ function getZanCountByBlogId(blogId) {
 async function changeZanPromise(userId,blogId,isZan){
     //1.根据userId和blogId查询是否有点赞记录
     let modules=await getZanByUserIdAndBlogId(userId,blogId);
-    console.log("modules>>"+modules);
+    // console.log("modules>>"+modules);
     if(modules.length>0){
     //2.设置是否为赞的标志
         let module=modules[0];

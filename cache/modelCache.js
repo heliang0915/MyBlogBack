@@ -44,11 +44,6 @@ cacheAry.forEach(function (item,index){
                                     modules=queryParse.filterByQuery(query,modules)
                                 }
                                 //排序
-                                
-                                console.log(query);
-                                console.log(JSON.stringify(sort));
-                                console.log(start,end);
-                                
                                 if(Object.keys(sort).length){
                                     modules.sort((a,b)=>{
                                         
