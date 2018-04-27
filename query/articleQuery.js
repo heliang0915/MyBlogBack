@@ -8,24 +8,16 @@ function articleListPromise(currentPage, query,sort,ps) {
         order:-1
     }
     sort=sort==null?defaultSort:sort;
-    // console.log(blogCache);
     return blogCache.page(currentPage, query,sort,ps);
 }
+
 //获取文章列表
 function articleListAllPromise(query,sort) {
     let defaultSort={
         order:-1
     }
     sort=sort==null?defaultSort:sort;
-    return new Promise((resolve, reject) => {
-        blogManager.find(query,(err,moudles)=>{
-            if (err) {
-                reject(err)
-            } else {
-                resolve(moudles)
-            }
-        },sort)
-    })
+    return blogCache.find(query,sort);
 }
 
 
@@ -37,6 +29,8 @@ function savePromise(uuid, model) {
                     reject(err)
                 } else {
                     resolve(null)
+                    //更新blog缓存
+                    blogCache.reload();
                 }
             })
 
@@ -46,6 +40,8 @@ function savePromise(uuid, model) {
                     reject(err)
                 } else {
                     resolve(null)
+                    //更新blog缓存
+                    blogCache.reload();
                 }
             })
         }
@@ -54,15 +50,17 @@ function savePromise(uuid, model) {
 
 //根据UUID获取文章信息
 function findByUUIDPromise(uuid) {
-    return new Promise((resolve, reject) => {
-        blogManager.findByUUID(uuid, function (err, module) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(module)
-            }
-        });
-    })
+    return blogCache.findByUUID(uuid);
+    // return new Promise((resolve, reject) => {
+    //     // blogManager.findByUUID(uuid, function (err, module) {
+    //     //     if (err) {
+    //     //         reject(err)
+    //     //     } else {
+    //     //         resolve(module)
+    //     //     }
+    //     // });
+    //
+    // })
 }
 
 function deletePromise(uuid){

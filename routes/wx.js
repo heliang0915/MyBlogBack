@@ -151,8 +151,7 @@ router.get('/blogSingle/:uuid', function (req, res) {
         var json = {
             module: blog
         }
-        //更新blog缓存
-        blogCache.reload();
+
         return json;
     }
     getSingle(uuid).then((json) => {

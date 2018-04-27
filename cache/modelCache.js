@@ -15,6 +15,7 @@ for(let manager in modelManager){
     let fn=`
     let ${manager} =modelManager.${manager} ; 
     ${manager}=new ${manager}();
+    global.${manager}=${manager};
      `
     eval(fn);
 }
@@ -71,11 +72,73 @@ cacheAry.forEach(function (item,index){
             reload(){
                 cacheManager.${fnPrefix}All();
                 console.log("${text}缓存更新...");
+            },
+            
+            findByUUID(uuid){
+                return new Promise((resolve, reject)=>{
+                    cache.exists('${fnPrefix}:all',(err,ext)=>{
+                        if(ext){
+                         console.log("findByUUID缓存查询....");
+                            cache.get('${fnPrefix}:all',(err,modules)=>{
+                               let module= modules.filter((item)=>{
+                                    return item.uuid=uuid;
+                               })[0];  
+                                 if (err) {
+                                    reject(err)
+                                } else {
+                                    resolve(module)
+                                } 
+                            });
+                        }else{
+                             blogManager.findByUUID(uuid, function (err, module) {
+                                if (err) {
+                                    reject(err)
+                                } else {
+                                    resolve(module)
+                                }
+                            });
+                        }
+                    });
+                    
+                });
+            },
+            find(query,sort){
+                return new Promise((resolve, reject)=>{
+                    cache.exists('${fnPrefix}:all',(err,ext)=>{
+                        if(ext){
+                            cache.get('${fnPrefix}:all',(err,modules)=>{
+                                let filed=Object.keys(sort)[0];
+                                let val=sort[filed];
+                                //查询
+                                modules=queryParse.filterByQuery(query,modules)
+                                //排序
+                                modules.sort((a,b)=>{
+                                    return (a[filed]-b[filed])*val;
+                                })
+                                console.log("[find]读取缓存${fnPrefix}");
+                                if (err) {
+                                    reject(err)
+                                } else {
+                                    resolve(modules)
+                                }
+                            })
+                        }else{
+                            ${fnPrefix}Manager.find(query,(err,modules)=>{
+                                if (err) {
+                                    reject(err)
+                                } else {
+                                    resolve(modules)
+                                }
+                            },sort)
+                            
+                            console.log("查询数据库[find]${fnPrefix}");
+                        }    
+                    });
+                });
             }
     
     };
         exports.${fnPrefix}Cache=${fnPrefix}Cache;
     `
     eval(fn);
-    // console.log(fn);
-});
+    });
