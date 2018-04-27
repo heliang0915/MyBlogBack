@@ -40,11 +40,23 @@ cacheAry.forEach(function (item,index){
                                 let val=sort[filed];
         
                                 //查询
-                                modules=queryParse.filterByQuery(query,modules)
+                                if(Object.keys(query).length){
+                                    modules=queryParse.filterByQuery(query,modules)
+                                }
                                 //排序
-                                modules.sort((a,b)=>{
-                                    return (a[filed]-b[filed])*val;
-                                })
+                                
+                                console.log(query);
+                                console.log(JSON.stringify(sort));
+                                console.log(start,end);
+                                
+                                if(Object.keys(sort).length){
+                                    modules.sort((a,b)=>{
+                                        
+                                        return (a[filed]-b[filed])*val;
+                                    })
+                                }
+                                
+                                
                                 var info={
                                     total,
                                     pageSize,
@@ -112,9 +124,11 @@ cacheAry.forEach(function (item,index){
                                 //查询
                                 modules=queryParse.filterByQuery(query,modules)
                                 //排序
+                                console.log(JSON.stringify(sort));
                                 modules.sort((a,b)=>{
                                     return (a[filed]-b[filed])*val;
                                 })
+                                
                                 console.log("[find]读取缓存${fnPrefix}");
                                 if (err) {
                                     reject(err)

@@ -96,7 +96,7 @@ router.post('/blogList', function (req, res) {
     async function getArticleList() {
         let info = await  articleQuery.articleListPromise(currentPage, query,sort);
         //普通模式下 不需要在排序评论信息的 直接返回以节省性能
-        if(params.search_field==null||params.search_field!="cv"){
+        if(params.search_field==null||(params.search_field!="cv"&&params.search_field!="zan")){
             for (let module of info.models) {
                 let count = await commentQuery.getCommentCount(module.uuid);
                 let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
@@ -115,10 +115,17 @@ router.post('/blogList', function (req, res) {
                 module['commentSize'] = count;
                 module['zanSize'] = zanCount;
             }
-            //按评论量排序
-            info.models.sort((a,b)=>{
-                return b.commentSize-a.commentSize;
-            })
+            if(params.search_field=="cv"){
+                //按评论量排序
+                info.models.sort((a,b)=>{
+                    return b.commentSize-a.commentSize;
+                })
+            }else{
+                //按点赞量排序
+                info.models.sort((a,b)=>{
+                    return b.zanSize-a.zanSize;
+                })
+            }
             //内存分页
             let pageSize=info.pageSize;
             let start=pageSize*(currentPage-1);
@@ -128,7 +135,6 @@ router.post('/blogList', function (req, res) {
             console.log("内存分页模式...");
             return info;
         }
-
     }
     getArticleList().then((info)=>{
         res.send(info);
