@@ -85,7 +85,7 @@ Base.prototype.getMaxOrder = function (callback) {
                 order = doc[0].order;
                 order=order==null?0:order;
             }
-            console.log("order>>>"+order);
+            // console.log("order>>>"+order);
             callback(null, order);
         }
     })
