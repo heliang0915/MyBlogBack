@@ -7,7 +7,7 @@ var config = {
     mongo: {
         //数据库链接地址
         // url: 'mongodb://62b4a3b21cff4:60ae51958af04@10.0.0.26:30097/c0c2d08b56244',
-        url : 'mongodb://www.blogapi.top:27017/myBlog',
+        url : 'mongodb://127.0.0.1:27017/myBlog',
         //分页
         pageSize: 7
     },
@@ -17,7 +17,7 @@ var config = {
     },
     redis:{
        port:6379,
-       host:'127.0.0.1'
+       host:'www.blogapi.top'
     }
 }
 
