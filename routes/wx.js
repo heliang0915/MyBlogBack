@@ -111,6 +111,7 @@ router.post('/blogList', function (req, res) {
         }else{
             //按评论量排序
             let allModules = await articleQuery.articleListAllPromise(query,sort);
+            let info={};
             info.models=allModules;
             for (let module of info.models) {
                 let count = await commentQuery.getCommentCount(module.uuid);
@@ -119,6 +120,7 @@ router.post('/blogList', function (req, res) {
                 module['zanSize'] = zanCount;
             }
             if(params.search_field=="cv"){
+
                 //按评论量排序
                 info.models.sort((a,b)=>{
                     return b.commentSize-a.commentSize;
@@ -130,7 +132,7 @@ router.post('/blogList', function (req, res) {
                 })
             }
             //内存分页
-            let info=queryParse.getPageQuery(currentPage,info.models);
+            info=queryParse.getPageQuery(currentPage,info.models);
             return info;
         }
     }
