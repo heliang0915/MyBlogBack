@@ -11,6 +11,7 @@ var channelQuery = require("../query/channelQuery");
 var commentQuery = require("../query/commentQuery");
 var {blogCache} = require("../cache/modelCache");
 var zanQuery = require("../query/zanQuery");
+var commentQuery = require("../query/commentQuery");
 var tokenUtil=require("../security/token");
 var util=require("../util/util");
 let queryParse=require("../cache/util/queryParse")
@@ -193,16 +194,29 @@ router.post('/blogZan', function (req, res) {
     }
 });
 
-//获取我的点赞
+//
 router.post('/myZanList',function (req, res) {
     let userId=util.userUtil.getUserId(req);
     var currentPage = req.body.page;
+    var type = req.body.listType;
+    console.log(req.body);
+
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
-     zanQuery.getArticleByUserId(userId,currentPage).then((info)=>{
-         res.send(info)
-     }).catch((err)=>{
-         res.send(err)
-     })
+     if(type==1){
+         //获取我的点赞文章列表
+         zanQuery.getArticleByUserId(userId,currentPage).then((info)=>{
+             res.send(info)
+         }).catch((err)=>{
+             res.send(err)
+         })
+     }else {
+         //获取我的评论文章列表
+         commentQuery.getBlogListByUserId(userId,currentPage).then((info)=>{
+             res.send(info)
+         }).catch((err)=>{
+             res.send(err)
+         })
+     }
 })
 
 module.exports = router;

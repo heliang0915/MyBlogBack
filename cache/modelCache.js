@@ -115,6 +115,11 @@ cacheAry.forEach(function (item,index){
                     cache.exists('${fnPrefix}:all',(err,ext)=>{
                         if(ext){
                             cache.get('${fnPrefix}:all',(err,modules)=>{
+                                if(sort==null){
+                                    sort={
+                                        order:-1
+                                    }
+                                }
                                 let filed=Object.keys(sort)[0];
                                 let val=sort[filed];
                                 //查询
