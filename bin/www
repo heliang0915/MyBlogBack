@@ -25,7 +25,7 @@ var options = {
 var httpsServer = https.createServer(options,app);
 
 
-var port = normalizePort(process.env.PORT || '8080');
+var port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
 
 /**
@@ -39,7 +39,7 @@ var server = http.createServer(app);
  */
 
 server.listen(port);
-httpsServer.listen('4430');
+httpsServer.listen('443');
 httpsServer.on('listening',onHttpServerListening)
 httpsServer.on('error',onError);
 server.on('error', onError);
