@@ -51,16 +51,6 @@ function savePromise(uuid, model) {
 //根据UUID获取文章信息
 function findByUUIDPromise(uuid) {
     return blogCache.findByUUID(uuid);
-    // return new Promise((resolve, reject) => {
-    //     // blogManager.findByUUID(uuid, function (err, module) {
-    //     //     if (err) {
-    //     //         reject(err)
-    //     //     } else {
-    //     //         resolve(module)
-    //     //     }
-    //     // });
-    //
-    // })
 }
 
 function deletePromise(uuid){
@@ -91,6 +81,8 @@ function addPVPromise (uuid){
         })
     })
 }
+
+
 
 module.exports = {
     articleListPromise,

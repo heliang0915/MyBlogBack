@@ -78,7 +78,7 @@ cacheAry.forEach(function (item,index){
             },
             reload(){
                 cacheManager.${fnPrefix}All();
-                console.log("${text}缓存更新...");
+                console.log("重新装载${text}缓存...");
             },
             
             findByUUID(uuid){
@@ -87,8 +87,9 @@ cacheAry.forEach(function (item,index){
                         if(ext){
                          console.log("findByUUID缓存查询....");
                             cache.get('${fnPrefix}:all',(err,modules)=>{
+                            
                                let module= modules.filter((item)=>{
-                                    return item.uuid=uuid;
+                                    return item.uuid==uuid;
                                })[0];  
                                  if (err) {
                                     reject(err)
@@ -119,7 +120,6 @@ cacheAry.forEach(function (item,index){
                                 //查询
                                 modules=queryParse.filterByQuery(query,modules)
                                 //排序
-                                console.log(JSON.stringify(sort));
                                 modules.sort((a,b)=>{
                                     return (a[filed]-b[filed])*val;
                                 })

@@ -48,16 +48,26 @@ router.post('/list',function(req,res){
 
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
+
     async  function  getSingle(uuid){
        let channels= await  channelQuery.getChannelALLPromise();
-       let blog=await articleQuery.findByUUIDPromise(uuid);
-       let channel=await channelQuery.getChannelPromise(blog.tag);
-        blog["channelName"]=channel.name;
-
+       let blog={};
+       if(uuid!=0){
+           blog=await articleQuery.findByUUIDPromise(uuid);
+           let channel=await channelQuery.getChannelPromise(blog.tag);
+           blog["channelName"]=channel.name;
+       }
+       // let blog=await articleQuery.findByUUIDPromise(uuid);
+       //
+       // let channel=await channelQuery.getChannelPromise(blog.tag);
+       //  blog["channelName"]=channel.name;
+       //
+       //
         var json={
             channels,
             module:blog
         }
+        // console.log(json);
         return json;
     }
 

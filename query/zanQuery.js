@@ -1,8 +1,10 @@
-
+let config=require("../config");
 var  {zanManager}=require("../db/modelManager");
+var  {zanCache,blogCache}=require("../cache/modelCache");
+var  queryParse=require("../cache/util/queryParse");
+var  util=require("../util/util");
+var  cheerio=require("cheerio");
 zanManager=new zanManager();
-
-
 
 function savePromise(uuid, model) {
     return new Promise((resolve, reject) => {
@@ -13,6 +15,8 @@ function savePromise(uuid, model) {
                 } else {
                     resolve(null)
                 }
+                //更新zan缓存
+                zanCache.reload();
             })
 
         } else {
@@ -23,6 +27,8 @@ function savePromise(uuid, model) {
                 } else {
                     resolve(null)
                 }
+                //更新zan缓存
+                zanCache.reload();
             })
         }
     })
@@ -47,7 +53,6 @@ function getZanCountByBlogId(blogId) {
             if (err) {
                 reject(err)
             } else {
-                // console.log(`zanModules>>>>>>>>>>>>>${JSON.stringify(zanModules)}`);
                 resolve(zanModules.length)
             }
         })
@@ -58,7 +63,6 @@ function getZanCountByBlogId(blogId) {
 async function changeZanPromise(userId,blogId,isZan){
     //1.根据userId和blogId查询是否有点赞记录
     let modules=await getZanByUserIdAndBlogId(userId,blogId);
-    // console.log("modules>>"+modules);
     if(modules.length>0){
     //2.设置是否为赞的标志
         let module=modules[0];
@@ -84,9 +88,50 @@ async  function isZanPromise(userId,blogId) {
     }
 }
 
+//查询指定用户下点赞文章
+async function  getArticleByUserId(userId,currentPage,sort){
+    let defaultSort={
+        order:-1
+    }
+    sort=sort==null?defaultSort:sort;
+
+    //获取所有的赞信息
+    let zanModels =await  zanCache.find({userId},sort);
+
+    let blogModels=[];
+    for(let zanModel of zanModels){
+        let blogModel= await  blogCache.findByUUID(zanModel.blogId);
+        var desc="";
+        var $=cheerio.load(blogModel.content);
+        var regText=/<p.*?>(.*?)<\/p>/g;
+        let isText=false;
+        blogModel.content.replace(regText,function(item,small){
+            item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
+            var $=cheerio.load(item);
+            var src=$("img").attr('src');
+            if(src){
+                isText=false;
+            }else{
+                if(isText==false&&item){
+                    desc=item;
+                    isText=true;
+                }
+            }
+        });
+        //描述信息
+        blogModel.desc= util.stringUtil.substr(desc,90);
+        blogModels.push(blogModel);
+    }
+    //内存分页
+    let info=queryParse.getPageQuery(currentPage,blogModels);
+    return info;
+}
+
+
 module.exports={
     savePromise,
     isZanPromise,
     getZanCountByBlogId,
+    getArticleByUserId,
     changeZanPromise
 }

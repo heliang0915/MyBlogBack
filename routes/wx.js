@@ -1,9 +1,10 @@
 var express = require("express")
 var router = express.Router();
 var fetch = require("../util/fetch");
+var config = require("../config");
 var moment = require("moment");
 var cheerio = require("cheerio");
-var wx = require("../config").wx;
+var wx = config.wx;
 var {userManager} = require("../db/modelManager");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
@@ -11,6 +12,8 @@ var commentQuery = require("../query/commentQuery");
 var {blogCache} = require("../cache/modelCache");
 var zanQuery = require("../query/zanQuery");
 var tokenUtil=require("../security/token");
+var util=require("../util/util");
+let queryParse=require("../cache/util/queryParse")
 
 userManager = new userManager();
 var appId = wx.appId;
@@ -103,33 +106,7 @@ router.post('/blogList', function (req, res) {
                 let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
                 module['commentSize'] = count;
                 module['zanSize'] = zanCount;
-
-
-                let ary=[];
-                var $=cheerio.load(module.content);
-                var regText=/<p.*?>(.*?)<\/p>/g;
-                module.content.replace(regText,function(item,small){
-                    item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
-                    var $=cheerio.load(item);
-                    console.log('替换。。。。。');
-                    var src=$("img").attr('src');
-                    var json={}
-                    if(src){
-                        json.type="image";
-                        json.text=src;
-                        ary.push(json);
-                    }else{
-                        json.type="text";
-                        json.text=item;
-                        ary.push(json);
-                    }
-                });
-                module.contentAry=ary;
-
-
-
             }
-            console.log("最快模式...");
             return info;
         }else{
             //按评论量排序
@@ -153,12 +130,7 @@ router.post('/blogList', function (req, res) {
                 })
             }
             //内存分页
-            let pageSize=info.pageSize;
-            let start=pageSize*(currentPage-1);
-            let end=currentPage*pageSize;
-            end=end>info.total?info.total:end;
-            info.models=info.models.slice(start,end);
-            console.log("内存分页模式...");
+            let info=queryParse.getPageQuery(currentPage,info.models);
             return info;
         }
     }
@@ -170,6 +142,7 @@ router.post('/blogList', function (req, res) {
     })
 });
 //wx 获取单个文章
+
 router.get('/blogSingle/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
     async function getSingle(uuid) {
@@ -183,18 +156,16 @@ router.get('/blogSingle/:uuid', function (req, res) {
         var json = {
             module: blog
         }
-
         return json;
     }
     getSingle(uuid).then((json) => {
         res.send(json);
     })
 })
-
-
+//获取赞状态
 router.post('/getZan',function (req,res) {
-    var {token,blogId} = req.body;
-    let userId=tokenUtil.getByKey(token,"userId");
+    var {blogId} = req.body;
+    let userId=util.userUtil.getUserId(req);
     if(userId){
         zanQuery.isZanPromise(userId,blogId).then((isZan)=>{
             res.send(isZan)
@@ -205,11 +176,10 @@ router.post('/getZan',function (req,res) {
         res.send(false);
     }
 })
-
 //点赞动作
 router.post('/blogZan', function (req, res) {
-    var {token,blogId,isZan} = req.body;
-    let userId=tokenUtil.getByKey(token,"userId");
+    var {blogId,isZan} = req.body;
+    let userId=util.userUtil.getUserId(req);
     if(userId){
         zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
             res.send('ok')
@@ -220,4 +190,17 @@ router.post('/blogZan', function (req, res) {
         res.send('false')
     }
 });
+
+//获取我的点赞
+router.post('/myZanList',function (req, res) {
+    let userId=util.userUtil.getUserId(req);
+    var currentPage = req.body.page;
+    currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
+     zanQuery.getArticleByUserId(userId,currentPage).then((info)=>{
+         res.send(info)
+     }).catch((err)=>{
+         res.send(err)
+     })
+})
+
 module.exports = router;

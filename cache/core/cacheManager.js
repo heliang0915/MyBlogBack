@@ -33,7 +33,6 @@ let cacheManager={
         cacheAry.forEach((config)=>{
             let key=Object.keys(config)[0];
             let val=config[key];
-
             let fn=`
             let ${key}All= ()=>{
                  //加载${val}信息
