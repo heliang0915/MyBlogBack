@@ -53,25 +53,7 @@ router.get('/single/:uuid',function(req,res){
        let blog=await articleQuery.findByUUIDPromise(uuid);
        let channel=await channelQuery.getChannelPromise(blog.tag);
         blog["channelName"]=channel.name;
-        // let ary=[];
-        // var $=cheerio.load(blog.content);
-        // var regText=/<p.*?>(.*?)<\/p>/g;
-        // blog.content.replace(regText,function(item,small){
-        //     item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
-        //     var $=cheerio.load(item);
-        //     var src=$("img").attr('src');
-        //     var json={}
-        //     if(src){
-        //         json.type="image";
-        //         json.text=src;
-        //         ary.push(json);
-        //     }else{
-        //         json.type="text";
-        //         json.text=item;
-        //         ary.push(json);
-        //     }
-        // });
-        // blog.contentAry=ary;
+
         var json={
             channels,
             module:blog

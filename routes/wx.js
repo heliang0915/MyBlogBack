@@ -2,6 +2,7 @@ var express = require("express")
 var router = express.Router();
 var fetch = require("../util/fetch");
 var moment = require("moment");
+var cheerio = require("cheerio");
 var wx = require("../config").wx;
 var {userManager} = require("../db/modelManager");
 var articleQuery = require("../query/articleQuery");
@@ -102,6 +103,31 @@ router.post('/blogList', function (req, res) {
                 let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
                 module['commentSize'] = count;
                 module['zanSize'] = zanCount;
+
+
+                let ary=[];
+                var $=cheerio.load(module.content);
+                var regText=/<p.*?>(.*?)<\/p>/g;
+                module.content.replace(regText,function(item,small){
+                    item=small.replace(/&nbsp/g,'').replace(/;/g,'').replace(/<br>/,'');
+                    var $=cheerio.load(item);
+                    console.log('替换。。。。。');
+                    var src=$("img").attr('src');
+                    var json={}
+                    if(src){
+                        json.type="image";
+                        json.text=src;
+                        ary.push(json);
+                    }else{
+                        json.type="text";
+                        json.text=item;
+                        ary.push(json);
+                    }
+                });
+                module.contentAry=ary;
+
+
+
             }
             console.log("最快模式...");
             return info;
