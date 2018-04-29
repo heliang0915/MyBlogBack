@@ -15,8 +15,6 @@ function savePromise(uuid, model) {
                 } else {
                     resolve(null)
                 }
-                //更新zan缓存
-                zanCache.reload();
             })
 
         } else {
@@ -27,8 +25,6 @@ function savePromise(uuid, model) {
                 } else {
                     resolve(null)
                 }
-                //更新zan缓存
-                zanCache.reload();
             })
         }
     })

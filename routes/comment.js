@@ -90,7 +90,6 @@ router.get('/getComments/:blogId', function (req, res) {
                             comment.pic=user.pic||"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522243775023&di=cb5e5f9679153add5f237ed0cb5b94b4&imgtype=0&src=http%3A%2F%2Fpic25.photophoto.cn%2F20121216%2F0010023949794270_b.jpg";
                         }
                         comment.children=children;
-                        console.log(`counter:${counter} comments.length:${comments.length}`);
                         if(counter==comments.length){
                             res.send(comments);
                         }

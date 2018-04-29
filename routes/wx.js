@@ -199,7 +199,7 @@ router.post('/myZanList',function (req, res) {
     let userId=util.userUtil.getUserId(req);
     var currentPage = req.body.page;
     var type = req.body.listType;
-    console.log(req.body);
+    // console.log(req.body);
 
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
      if(type==1){

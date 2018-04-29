@@ -44,7 +44,7 @@ async function getBlogListByUserId(userId,currentPage,type=1){
 
     //查询某人的评论信息
      let comments= await  commentCache.find(query);
-     console.log(query);
+     // console.log(query);
      for(let commentModel of comments){
         let {blogId}= commentModel;
         let blog= await blogCache.findByUUID(blogId);

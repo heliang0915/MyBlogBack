@@ -29,8 +29,7 @@ function savePromise(uuid, model) {
                     reject(err)
                 } else {
                     resolve(null)
-                    //更新blog缓存
-                    blogCache.reload();
+
                 }
             })
 
@@ -40,8 +39,6 @@ function savePromise(uuid, model) {
                     reject(err)
                 } else {
                     resolve(null)
-                    //更新blog缓存
-                    blogCache.reload();
                 }
             })
         }
