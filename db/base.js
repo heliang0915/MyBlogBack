@@ -181,11 +181,12 @@ Base.prototype.del = function (uuids, callback) {
                 console.log("删除出现错误：" + err);
             } else {
                 //删除
-                modelSchema.remove();
-                callback(null);
-                console.log("删除成功");
-                //加载缓存
-                this[self.prefixCache+"Cache"].reload(); //在cacheModel类初始化后向global中导出了一份cache对象
+                modelSchema.remove(()=>{
+                    callback(null);
+                    console.log("删除成功");
+                    //加载缓存
+                    this[self.prefixCache+"Cache"].reload(); //在cacheModel类初始化后向global中导出了一份cache对象
+                });
             }
         })
     })

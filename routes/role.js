@@ -1,10 +1,10 @@
 var express=require("express")
 var router=express.Router();
 var  {roleManager}=require("../db/modelManager");
-roleManager=new roleManager();
+var  roleQuery=require("../query/roleQuery");
+// roleManager=new roleManager();
 
 router.post('/list',function(req,res){
-
      var currentPage=req.body.page;
      var sort=req.body.sort;
      var params=req.body.params;
@@ -19,39 +19,64 @@ router.post('/list',function(req,res){
         query['tag']=params.tag;
     }
 
-     roleManager.page(currentPage, query, function(err,modules){
+    roleQuery.roleListPromise(currentPage, query,sort).then((modules)=>{
         res.send(modules);
+    }).catch((err)=>{
+        res.send(err);
     })
+
+    //  roleManager.page(currentPage, query, function(err,modules){
+    //     res.send(modules);
+    // })
+
+
 })
 
 
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    roleManager.findByUUID(uuid,function (err,module){
+    roleQuery.getRoleByUUIDPromise(uuid).then((module)=>{
         res.send(module);
+    }).catch((err)=>{
+        res.send(err);
     })
+
+    // roleManager.findByUUID(uuid,function (err,module){
+    //     res.send(module);
+    // })
 })
 
 router.post('/save',function(req,res){
     var role=req.body;
     var uuid=role.uuid;
-    if(uuid){
-        roleManager.edit(uuid,role,function(err){
-            res.send(err==null?"ok":err);
-        })
-    }else{
-        roleManager.add(role,function(err){
-            res.send(err==null?"ok":err);
-        })
-    }
+
+    roleQuery.savePromise(uuid,user).then(()=>{
+        res.send("ok");
+    }).catch((err)=>{
+        res.send(err);
+    })
+    // if(uuid){
+    //     roleManager.edit(uuid,role,function(err){
+    //         res.send(err==null?"ok":err);
+    //     })
+    // }else{
+    //     roleManager.add(role,function(err){
+    //         res.send(err==null?"ok":err);
+    //     })
+    // }
 })
 
 
-router.get('/devare/:uuid',function(req,res){
+router.get('/delete/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    roleManager.del(uuid,function(err){
-        res.send(err==null?"ok":err);
+    roleQuery.deletePromise(uuid).then(()=>{
+        res.send("ok");
+    }).catch((err)=>{
+        res.send(err);
     })
+    // roleManager.del(uuid,function(err){
+    //     res.send(err==null?"ok":err);
+    // })
 })
 
 module.exports=router;

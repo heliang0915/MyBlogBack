@@ -1,11 +1,37 @@
-let config=require("../config");
+/**
+ *时间:2018/5/1
+ *作者:heliang
+ *功能:赞查询 负责频道增删改查的工作，其中查询已经使用cache缓存处理
+ *    增 改 删 使用manager类处理
+ */
+
+// let config=require("../config");
 var  {zanManager}=require("../db/modelManager");
 var  {zanCache,blogCache}=require("../cache/modelCache");
 var  queryParse=require("../cache/util/queryParse");
+// var commentQuery = require("../query/commentQuery");
+
+// var articleQuery = require("../query/articleQuery");
+// var channelQuery = require("../query/channelQuery");
+var commentQuery = require("../query/commentQuery");
+
+// console.log("articleQuery>>>>"+Object.keys(articleQuery));
+// console.log("channelQuery>>>>"+Object.keys(channelQuery));
+console.log("commentQuery>>>>"+Object.keys(commentQuery));
+
+
 var  util=require("../util/util");
 var  cheerio=require("cheerio");
 zanManager=new zanManager();
+console.log(commentQuery)
 
+
+/**
+ * 保存赞的信息
+ * @param uuid zan的UUID
+ * @param model zan模型
+ * @returns {Promise<any>} 返回Promise
+ */
 function savePromise(uuid, model) {
     return new Promise((resolve, reject) => {
         if (uuid) {
@@ -31,31 +57,53 @@ function savePromise(uuid, model) {
 
 }
 
+/**
+ * 根据用户ID和文章ID获取赞的集合
+ * @param userId
+ * @param blogId
+ * @returns {Promise<any>}
+ */
 function getZanByUserIdAndBlogId(userId,blogId) {
-    return new Promise((resolve, reject)=>{
-        zanManager.find({userId, blogId},(err,zanModules)=>{
-            if (err) {
-                reject(err)
-            } else {
-                resolve(zanModules)
-            }
-        })
-    })
+   return  zanCache.find({userId, blogId})
+    // return new Promise((resolve, reject)=>{
+    //     zanManager.find({userId, blogId},(err,zanModules)=>{
+    //         if (err) {
+    //             reject(err)
+    //         } else {
+    //             resolve(zanModules)
+    //         }
+    //     })
+    // })
 }
 
-function getZanCountByBlogId(blogId) {
-    return new Promise((resolve, reject)=>{
-        zanManager.find({blogId},(err,zanModules)=>{
-            if (err) {
-                reject(err)
-            } else {
-                resolve(zanModules.length)
-            }
-        })
-    })
+
+/**
+ * 根据文章ID获取zan的数量
+ * @param blogId 文章ID
+ * @returns {Promise<any>}
+ */
+async  function getZanCountByBlogId(blogId) {
+   let zanModules=await zanCache.find({ blogId});
+   return zanModules.length;
+
+    // return new Promise((resolve, reject)=>{
+    //     zanManager.find({blogId},(err,zanModules)=>{
+    //         if (err) {
+    //             reject(err)
+    //         } else {
+    //             resolve(zanModules.length)
+    //         }
+    //     })
+    // })
 }
 
-//点击赞或取消赞
+/**
+ * 点击赞或取消赞
+ * @param userId 用户ID
+ * @param blogId 文章ID
+ * @param isZan 是否赞
+ * @returns {Promise<void>} 返回promise对象
+ */
 async function changeZanPromise(userId,blogId,isZan){
     //1.根据userId和blogId查询是否有点赞记录
     let modules=await getZanByUserIdAndBlogId(userId,blogId);
@@ -73,7 +121,12 @@ async function changeZanPromise(userId,blogId,isZan){
         });
     }
 }
-//根据用户id和blogId获取当前文章是否点赞
+/**
+ * 根据用户id和blogId获取当前文章是否点赞
+ * @param userId  用户ID
+ * @param blogId  文章ID
+ * @returns {Promise<*>}
+ */
 async  function isZanPromise(userId,blogId) {
     let modules=await getZanByUserIdAndBlogId(userId,blogId);
     if(modules.length>0){
@@ -84,19 +137,35 @@ async  function isZanPromise(userId,blogId) {
     }
 }
 
-//查询指定用户下点赞文章
+/**
+ * 查询指定用户下点赞文章
+ * @param userId 用户ID
+ * @param currentPage 当前页数
+ * @param sort 排序字段
+ * @returns {Promise<*>} Promise对象
+ */
 async function  getArticleByUserId(userId,currentPage,sort){
     let defaultSort={
         order:-1
     }
+    console.log(`getArticleByUserId........`)
     sort=sort==null?defaultSort:sort;
 
     //获取所有的赞信息
     let zanModels =await  zanCache.find({userId},sort);
 
     let blogModels=[];
-    for(let zanModel of zanModels){
+
+    console.log(`zanModels:${zanModels.length}`);
+
+    zanModels.forEach(async (zanModel)=>{
         let blogModel= await  blogCache.findByUUID(zanModel.blogId);
+        console.log(`blogModel>>>>>>>:${JSON.stringify(commentQuery)}`);
+        let count = await commentQuery.getCommentCount(blogModel.uuid);
+        console.log(`count>>>>>>>:${count}`);
+        let zanCount= await  getZanCountByBlogId(zanModel.blogId);
+        console.log(`zanCount>>>>>>>:${zanCount}`);
+
         var desc="";
         var $=cheerio.load(blogModel.content);
         var regText=/<p.*?>(.*?)<\/p>/g;
@@ -116,13 +185,16 @@ async function  getArticleByUserId(userId,currentPage,sort){
         });
         //描述信息
         blogModel.desc= util.stringUtil.substr(desc,90);
+        blogModel['commentSize'] =0;// count;
+        blogModel['zanSize'] = zanCount;
         blogModels.push(blogModel);
-    }
+    })
+
+    // }
     //内存分页
     let info=queryParse.getPageQuery(currentPage,blogModels);
     return info;
 }
-
 
 module.exports={
     savePromise,
