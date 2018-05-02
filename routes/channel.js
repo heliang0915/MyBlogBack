@@ -12,13 +12,18 @@ router.post('/list',function(req,res){
         query['name']=new RegExp(params.title);
     }
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
-
-
-    channelQuery.getChannelALLPromise().then(info=>{
+    sort=sort==null?{order:-1}:sort;
+    channelQuery.pagePromise(currentPage, query,sort,pageSize).then(info=>{
         res.send(info);
     }).catch((err)=>{
         res.send(err);
     })
+
+    // channelQuery.getChannelALLPromise().then(info=>{
+    //     res.send(info);
+    // }).catch((err)=>{
+    //     res.send(err);
+    // })
 
 
 
