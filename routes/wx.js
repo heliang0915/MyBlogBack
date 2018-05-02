@@ -15,9 +15,6 @@ var tokenUtil=require("../security/token");
 var util=require("../util/util");
 let queryParse=require("../cache/util/queryParse")
 
-console.log("commentQuery++++++"+Object.keys(commentQuery));
-console.log("zanQuery++++++"+Object.keys(zanQuery));
-
 userManager = new userManager();
 var appId = wx.appId;
 var secret = wx.secret;

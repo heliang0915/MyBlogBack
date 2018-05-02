@@ -4,8 +4,7 @@ var  {userManager}=require("../db/modelManager");
 userManager=new userManager();
 
 router.post('/list',function(req,res){
-
-     var currentPage=req.body.page;
+    var currentPage=req.body.page;
     var sort=req.body.sort;
     var params=req.body.params;
     var pageSize=req.body.pageSize;

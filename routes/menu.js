@@ -100,8 +100,6 @@ router.get('/listByRank/:rank', function (req, res) {
 router.get('/getChildMenu/:uuid', function (req, res) {
     var uuid = req.params.uuid;
     var children = getChildren(uuid);
-
-
     function getChild(uuid) {
         return new Promise(function (reslove, reject) {
             menuQuery.menuListAllPromise({"parentId": uuid},{
