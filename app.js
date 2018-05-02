@@ -33,8 +33,6 @@ app.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
-console.log('aaa');
-
 app.use('/', index);
 app.use('/channel', channel);
 app.use('/editor', editor);
