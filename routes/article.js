@@ -1,13 +1,8 @@
 var express=require("express")
 var moment=require("moment");
-var cheerio=require("cheerio");
 var router=express.Router();
 var  channelQuery= require("../query/channelQuery");
 var  articleQuery= require("../query/articleQuery");
-
-var {zanManager} = require("../db/modelManager");
-zanManager = new zanManager();
-
 
 //获取文章列表
 router.post('/list',function(req,res){
@@ -27,7 +22,7 @@ router.post('/list',function(req,res){
         if(info.models.length>0) {
             for(let i=0;i<info.models.length;i++){
                let  blog=info.models[i];
-               let channel= await channelQuery.getChannelPromise(blog.tag);
+               let channel= await channelQuery.getChannelByUUIDPromise(blog.tag);
                 blog["channelName"] = channel.name;
                 blog["content"] = blog.content.substring(0, 120);
                 if(i==info.models.length-1){
@@ -53,16 +48,10 @@ router.get('/single/:uuid',function(req,res){
        let channels= await  channelQuery.getChannelALLPromise();
        let blog={};
        if(uuid!=0){
-           blog=await articleQuery.findByUUIDPromise(uuid);
-           let channel=await channelQuery.getChannelPromise(blog.tag);
+           blog=await articleQuery.getArticleByUUIDPromise(uuid);
+           let channel=await channelQuery.getChannelByUUIDPromise(blog.tag);
            blog["channelName"]=channel.name;
        }
-       // let blog=await articleQuery.findByUUIDPromise(uuid);
-       //
-       // let channel=await channelQuery.getChannelPromise(blog.tag);
-       //  blog["channelName"]=channel.name;
-       //
-       //
         var json={
             channels,
             module:blog
@@ -74,11 +63,6 @@ router.get('/single/:uuid',function(req,res){
     getSingle(uuid).then((json)=>{
         res.send(json);
     })
-
-    // (async  function () {
-    //     let json= await  getSingle(uuid);
-    //      res.send(json);
-    //  })();
 })
 
 router.post('/save',function(req,res){

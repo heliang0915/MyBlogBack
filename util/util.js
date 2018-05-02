@@ -14,10 +14,11 @@ let util={
         }
     },
     userUtil:{
+        //从token中解析userId
         getUserId(req){
             var {token} = req.body;
             let userId=tokenUtil.getByKey(token,"userId");
-            console.log("userId>>>>>>>>"+userId);
+            console.log("token中解析的userId为:"+userId);
             return userId;
         }
     }

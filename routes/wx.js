@@ -8,10 +8,16 @@ var wx = config.wx;
 var {userManager} = require("../db/modelManager");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
-var commentQuery = require("../query/commentQuery");
+// var commentQuery = require("../query/commentQuery");
+
+
+
+
 var {blogCache} = require("../cache/modelCache");
-var zanQuery = require("../query/zanQuery");
 var commentQuery = require("../query/commentQuery");
+console.log("commentQuery>>>>"+JSON.stringify(commentQuery));
+
+var zanQuery = require("../query/zanQuery");
 var tokenUtil=require("../security/token");
 var util=require("../util/util");
 let queryParse=require("../cache/util/queryParse")
@@ -104,6 +110,7 @@ router.post('/blogList', function (req, res) {
         if(params.search_field==null||(params.search_field!="cv"&&params.search_field!="zan")){
             for (let module of info.models) {
                 let count = await commentQuery.getCommentCount(module.uuid);
+                console.log("getCommentCount::"+commentQuery);
                 let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
                 module['commentSize'] = count;
                 module['zanSize'] = zanCount;
@@ -149,8 +156,8 @@ router.post('/blogList', function (req, res) {
 router.get('/blogSingle/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
     async function getSingle(uuid) {
-        let blog = await articleQuery.findByUUIDPromise(uuid);
-        let channel = await channelQuery.getChannelPromise(blog.tag);
+        let blog = await articleQuery.getArticleByUUIDPromise(uuid);
+        let channel = await channelQuery.getChannelByUUIDPromise(blog.tag);
         //增加pv
         let pv = blog.pv == null ? 0 : blog.pv;
         blog.pv = parseInt(pv) + 1;
@@ -199,8 +206,7 @@ router.post('/myZanList',function (req, res) {
     let userId=util.userUtil.getUserId(req);
     var currentPage = req.body.page;
     var type = req.body.listType;
-    console.log(req.body);
-
+    // console.log(req.body);
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
      if(type==1){
          //获取我的点赞文章列表

@@ -12,15 +12,25 @@ router.post('/list',function(req,res){
         query['name']=new RegExp(params.title);
     }
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
-    channelQuery.pagePromise(currentPage, query,sort,pageSize).then(modules=>{
-        res.send(modules);
+
+
+    channelQuery.getChannelALLPromise().then(info=>{
+        res.send(info);
     }).catch((err)=>{
         res.send(err);
     })
+
+
+
+    // channelQuery.pagePromise(currentPage, query,sort,pageSize).then(info=>{
+    //     res.send(info);
+    // }).catch((err)=>{
+    //     res.send(err);
+    // })
 })
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    channelQuery.getChannelPromise(uuid).then((module)=>{
+    channelQuery.getChannelByUUIDPromise(uuid).then((module)=>{
         res.send(module);
     }).catch((err)=>{
         res.send(err);

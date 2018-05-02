@@ -5,11 +5,12 @@
  */
 
 var  config=require("../config");
-var cacheManager=require("./core/cacheManager");
+var  cacheManager=require("./core/cacheManager");
 var  cache=require("./core/cache");
 var  queryParse=require("./util/queryParse");
 var  {cacheAry}=require("./const/cacheConst");
 var  modelManager=require("../db/modelManager");
+
 
 for(let manager in modelManager){
     let fn=`
@@ -17,6 +18,7 @@ for(let manager in modelManager){
     ${manager}=new ${manager}();
     global.${manager}=${manager};
      `
+    // console.log(`fn:${fn}`);
     eval(fn);
 }
 
@@ -50,8 +52,6 @@ cacheAry.forEach(function (item,index){
                                         return (a[filed]-b[filed])*val;
                                     })
                                 }
-                                
-                                
                                 var info={
                                     total,
                                     pageSize,
@@ -78,16 +78,16 @@ cacheAry.forEach(function (item,index){
             },
             reload(){
                 cacheManager.${fnPrefix}All();
-                console.log("重新装载${text}缓存...");
+                console.log("更新${text}缓存...");
             },
             
             findByUUID(uuid){
                 return new Promise((resolve, reject)=>{
                     cache.exists('${fnPrefix}:all',(err,ext)=>{
                         if(ext){
-                         console.log("findByUUID缓存查询....");
+                         
                             cache.get('${fnPrefix}:all',(err,modules)=>{
-                            
+                            console.log("findByUUID缓存查询....");
                                let module= modules.filter((item)=>{
                                     return item.uuid==uuid;
                                })[0];  
@@ -129,7 +129,7 @@ cacheAry.forEach(function (item,index){
                                     return (a[filed]-b[filed])*val;
                                 })
                                 
-                                console.log("[find]读取缓存${fnPrefix}");
+                                console.log("调用[find]读取${fnPrefix}缓存");
                                 if (err) {
                                     reject(err)
                                 } else {
@@ -152,6 +152,8 @@ cacheAry.forEach(function (item,index){
             }
     
     };
+        //导出全局变量一份 方便db中调用
+        global.${fnPrefix}Cache=${fnPrefix}Cache;
         exports.${fnPrefix}Cache=${fnPrefix}Cache;
     `
     eval(fn);

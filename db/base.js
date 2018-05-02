@@ -5,14 +5,13 @@ var uuid = require('node-uuid');
 // var modelPath = "./";
 //全局配置对象
 var config = require('../config');
-var cacheManager = require('../cache/core/cache');
 
 //获取users的schema
-// var modelName;
 var ModelSchema = {};
 var model = require('./schema');
 function Base(modelName){
     this.modelName=modelName;
+    this.prefixCache= modelName.slice(0,modelName.indexOf('Model'));
     ModelSchema[modelName] = mongoose.model(modelName);
     this.findByData =  function(data, callback){
         var self=this;
@@ -78,14 +77,12 @@ Base.prototype.getMaxOrder = function (callback) {
     query.exec(function (err, doc) {
         if (err) {
             callback(err);
-            // errLogger.error(err);
         } else {
             var order = 0;
             if (doc[0]) {
                 order = doc[0].order;
                 order=order==null?0:order;
             }
-            // console.log("order>>>"+order);
             callback(null, order);
         }
     })
@@ -123,11 +120,12 @@ Base.prototype.add = function (modelData, callback) {
             if (err) {
                 callback(err);
                 console.log("新增出现错误：" + err);
-                // errLogger.error(err);
             } else {
                 _this.findByUUID(tempUUID,(err,module)=>{
                     callback(null,module);
                     console.log("插入成功");
+                    //加载缓存
+                    this[_this.prefixCache+"Cache"].reload(); //在cacheModel类初始化后向global中导出了一份cache对象
                 })
             }
         });
@@ -136,13 +134,13 @@ Base.prototype.add = function (modelData, callback) {
 
 /*修改*/
 Base.prototype.edit = function (uuid, editObj, callback) {
+    let _this=this;
     callback = callback == undefined ? function () {
     } : callback;
     this.findByUUIDByNoParse(uuid, function (err, model) {
         if (err) {
             callback(err);
             console.log("修改出现错误：" + err);
-            // errLogger.error(err);
         } else {
             //循环
             for (var key in editObj) {
@@ -154,10 +152,11 @@ Base.prototype.edit = function (uuid, editObj, callback) {
                 if (err) {
                     callback(err);
                     console.log("修改出现错误：" + err);
-                    // errLogger.error(err);
                 } else {
                     callback(null);
                     console.log("修改成功");
+                    //加载缓存
+                    this[_this.prefixCache+"Cache"].reload(); //在cacheModel类初始化后向global中导出了一份cache对象
                 }
             });
         }
@@ -182,9 +181,12 @@ Base.prototype.del = function (uuids, callback) {
                 console.log("删除出现错误：" + err);
             } else {
                 //删除
-                modelSchema.remove();
-                callback(null);
-                console.log("删除成功");
+                modelSchema.remove(()=>{
+                    callback(null);
+                    console.log("删除成功");
+                    //加载缓存
+                    this[self.prefixCache+"Cache"].reload(); //在cacheModel类初始化后向global中导出了一份cache对象
+                });
             }
         })
     })
