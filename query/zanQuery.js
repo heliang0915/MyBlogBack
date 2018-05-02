@@ -7,23 +7,22 @@
 
 // let config=require("../config");
 var  {zanManager}=require("../db/modelManager");
-var  {zanCache,blogCache}=require("../cache/modelCache");
+var  {zanCache,blogCache,commentCache}=require("../cache/modelCache");
 var  queryParse=require("../cache/util/queryParse");
 // var commentQuery = require("../query/commentQuery");
 
 // var articleQuery = require("../query/articleQuery");
 // var channelQuery = require("../query/channelQuery");
-var commentQuery = require("../query/commentQuery");
+// var commentQuery = require("./commentQuery");
 
 // console.log("articleQuery>>>>"+Object.keys(articleQuery));
 // console.log("channelQuery>>>>"+Object.keys(channelQuery));
-console.log("commentQuery>>>>"+Object.keys(commentQuery));
-
+// console.log("commentQuery>>>>"+Object.keys(commentQuery));
 
 var  util=require("../util/util");
 var  cheerio=require("cheerio");
 zanManager=new zanManager();
-console.log(commentQuery)
+// console.log(commentQuery)
 
 
 /**
@@ -96,6 +95,22 @@ async  function getZanCountByBlogId(blogId) {
     //     })
     // })
 }
+async  function getCommentCountByBlogId(blogId) {
+    let commentModules=await commentCache.find({blogId, type: 1});
+    return commentModules.length;
+
+    // return new Promise((resolve, reject)=>{
+    //     zanManager.find({blogId},(err,zanModules)=>{
+    //         if (err) {
+    //             reject(err)
+    //         } else {
+    //             resolve(zanModules.length)
+    //         }
+    //     })
+    // })
+}
+
+
 
 /**
  * 点击赞或取消赞
@@ -158,10 +173,10 @@ async function  getArticleByUserId(userId,currentPage,sort){
 
     console.log(`zanModels:${zanModels.length}`);
 
-    zanModels.forEach(async (zanModel)=>{
+    for(let zanModel of zanModels){
         let blogModel= await  blogCache.findByUUID(zanModel.blogId);
-        console.log(`blogModel>>>>>>>:${JSON.stringify(commentQuery)}`);
-        let count = await commentQuery.getCommentCount(blogModel.uuid);
+        // console.log(`blogModel>>>>>>>:${JSON.stringify(commentQuery)}`);
+        let count = await getCommentCountByBlogId(blogModel.uuid);
         console.log(`count>>>>>>>:${count}`);
         let zanCount= await  getZanCountByBlogId(zanModel.blogId);
         console.log(`zanCount>>>>>>>:${zanCount}`);
@@ -185,12 +200,21 @@ async function  getArticleByUserId(userId,currentPage,sort){
         });
         //描述信息
         blogModel.desc= util.stringUtil.substr(desc,90);
-        blogModel['commentSize'] =0;// count;
+        console.log(1);
+        blogModel['commentSize'] =count;
+        console.log(2);
         blogModel['zanSize'] = zanCount;
+        console.log(3);
         blogModels.push(blogModel);
-    })
+        console.log(4);
+    }
+    // zanModels.forEach(async (zanModel)=>{
+    //
+    // })
 
     // }
+
+    console.log(blogModels.length);
     //内存分页
     let info=queryParse.getPageQuery(currentPage,blogModels);
     return info;

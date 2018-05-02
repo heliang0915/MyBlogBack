@@ -18,27 +18,9 @@ commentManager = new commentManager();
  * @param blogId
  * @returns {Promise<any>}
  */
- function getCommentCount(blogId) {
-    console.log("comments>>>>>"+blogId);
-   //  new Promise(()=>{
-   //
-   //  })
-   // let comments=  commentCache.find({blogId, type: 1})
-   //  // console.log("comments>>>>>"+comments.length);
-   //  commentCache.find({blogId, type: 1}).then((comments) => {
-   //      resolve(comments.length);
-   //  }).catch(() => {
-   //      reject(err)
-   //  })
-
-    // return comments.length;
-    return new Promise((resolve, reject) => {
-        commentCache.find({blogId, type: 1}).then((comments) => {
-            resolve(comments.length);
-        }).catch(() => {
-            reject(err)
-        })
-    })
+ async  function getCommentCount(blogId) {
+   let comments=await  commentCache.find({blogId, type: 1})
+   return comments.length;
 }
 
 
