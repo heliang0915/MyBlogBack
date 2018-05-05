@@ -98,7 +98,7 @@ cacheAry.forEach(function (item,index){
                                 } 
                             });
                         }else{
-                             blogManager.findByUUID(uuid, function (err, module) {
+                             ${fnPrefix}Manager.findByUUID(uuid, function (err, module) {
                                 if (err) {
                                     reject(err)
                                 } else {
