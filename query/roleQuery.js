@@ -6,9 +6,10 @@
  */
 
 
-var  {roleManager}=require("../db/modelManager");
-var  {roleCache}=require("../cache/modelCache");
+var  {roleManager,rightManager}=require("../db/modelManager");
+var  {roleCache,rightCache}=require("../cache/modelCache");
 roleManager = new roleManager();
+rightManager = new rightManager();
 
 /**
  * 获取角色列表(分页)
@@ -98,10 +99,71 @@ function deletePromise(uuid){
 
 
 
+function getRightByRoleId(roleId) {
+    let query={
+        roleId
+    }
+    let defaultSort={
+        order:-1
+    }
+    return rightCache.find(query,defaultSort);
+}
+
+  function saveRoleRight(roleId,menus){
+    return new Promise(async (resolve,reject)=>{
+        let rightModels=await getRightByRoleId(roleId);
+        if(rightModels.length>0){
+            let model=rightModels[0];
+            model.menus=menus;
+            rightManager.edit(model.uuid, model, function (err) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(null)
+
+                }
+            })
+        }else{
+            let model={};
+            model.roleId=roleId;
+            model.menus=menus;
+            console.dir(rightManager);
+
+
+            rightManager.add(model, function (err) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(null)
+                }
+            })
+
+
+            // rightManager.add(model, function (err) {
+            //     if (err) {
+            //         reject(err)
+            //     } else {
+            //         resolve(null)
+            //
+            //     }
+            // })
+
+        }
+    })
+}
+
+
+
+
+
+
+
 module.exports = {
     roleListPromise,
     roleListAllPromise,
     getRoleByUUIDPromise,
+    saveRoleRight,
+    getRightByRoleId,
     savePromise,
     deletePromise
 }

@@ -8,6 +8,7 @@ modules.forEach(function (item,index){
         };
         util.inherits(${fnPrefix}Manager,baseDao); 
         exports.${fnPrefix}Manager = ${fnPrefix}Manager;
+        
         `
     eval(fn);
 });

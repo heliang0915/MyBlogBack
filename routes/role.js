@@ -50,7 +50,7 @@ router.post('/save',function(req,res){
     var role=req.body;
     var uuid=role.uuid;
 
-    roleQuery.savePromise(uuid,user).then(()=>{
+    roleQuery.savePromise(uuid,role).then(()=>{
         res.send("ok");
     }).catch((err)=>{
         res.send(err);
@@ -78,5 +78,33 @@ router.get('/delete/:uuid',function(req,res){
     //     res.send(err==null?"ok":err);
     // })
 })
+
+
+//保存权限信息
+router.post('/saveRight',function(req,res){
+    let {menus,roleId}=req.body;
+    // let menus=["7099b1732765488eb17a08594b0b534e","2da38a9b3f5e429bb8306e5f0488eb97","2da38a9b3f5e429bb8306e5f0488eb97"];
+    // let roleId="4301f74934b248bd98f0b55f1aef02bd";
+    roleQuery.saveRoleRight(roleId,menus).then(()=>{
+        res.send("ok");
+    }).catch((err)=>{
+        res.send(err);
+    })
+})
+//根据角色ID查询权限菜单信息
+router.get('/getMenusByRoleId/:roleId',function(req,res){
+    var roleId=req.params.roleId==null?0:req.params.roleId;
+    roleQuery.getRightByRoleId(roleId).then((rightModels)=>{
+        if(rightModels.length>0){
+            let model=rightModels[0];
+            res.send( model.menus);
+        }else{
+            res.send([]);
+        }
+    }).catch((err)=>{
+        res.send(err);
+    })
+})
+
 
 module.exports=router;
