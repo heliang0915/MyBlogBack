@@ -34,10 +34,8 @@ cacheAry.forEach(function (item,index){
                         if(ext){
                             cache.get('${fnPrefix}:all',(err,modules)=>{
                                 var pageSize = ps||config.mongo.pageSize;
-                                let total=modules.length;
-                                let start=pageSize*(currentPage-1);
-                                let end=currentPage*pageSize;
-                                end=end>total?total:end;
+                                
+                               
                                 let filed=Object.keys(sort)[0];
                                 let val=sort[filed];
         
@@ -52,6 +50,10 @@ cacheAry.forEach(function (item,index){
                                         return (a[filed]-b[filed])*val;
                                     })
                                 }
+                                let total=modules.length;
+                                 let start=pageSize*(currentPage-1);
+                                let end=currentPage*pageSize;
+                                end=end>total?total:end;
                                 var info={
                                     total,
                                     pageSize,
