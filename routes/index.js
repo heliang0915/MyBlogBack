@@ -15,6 +15,12 @@ router.get('/reload',function (req,res) {
     res.render('reload');
 })
 
+router.post('/login',function (req,res) {
+    let {user}=req.body;
+    let {userName,password}=user;
+    res.send(JSON.stringify({userName,password}))
+})
+
 
 function  reload(callback) {
     let reloadSh="sh reload.sh";
@@ -27,5 +33,7 @@ function  reload(callback) {
         }
     })
 }
+
+
 
 module.exports = router;
