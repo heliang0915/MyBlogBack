@@ -50,14 +50,17 @@ router.get('/single/:uuid', function (req, res) {
     getSingleUser(uuid).then((user)=>{
         res.send(user);
     }).catch((err)=>{
-            res.send(err);
+        res.send(err);
     })
 
 
     async function getSingleUser(uuid) {
         let user=await userQuery.getUserByUUIDPromise(uuid);
+        user=user==null?{}:user
+        console.log("user>>>"+user);
         let roles= await roleQuery.roleListAllPromise({});
         user.roles=roles;
+        console.log("getSingleUser>>>"+user);
         return user;
 
     }

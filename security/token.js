@@ -42,6 +42,14 @@ var token={
         }
     },
 
+    createUserToken:function(userId){
+        let userInfo=typeof userId=="string"?{userId}:userId;
+
+        let tokenStr=this.createToken(userInfo,Date.now()/1000+24*3600);
+        console.log("生成token成功");
+        return tokenStr;
+
+    },
     checkToken:function(token){
         var resDecode=this.decodeToken(token);
         if(!resDecode){

@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var tokenUtil=require("../security/token");
+let userQuery=require("../query/userQuery");
 var process = require('child_process');
 router.all('*', function(req, res, next) {
     res.type('html');
@@ -16,9 +18,34 @@ router.get('/reload',function (req,res) {
 })
 
 router.post('/login',function (req,res) {
-    let {user}=req.body;
-    let {userName,password}=user;
-    res.send(JSON.stringify({userName,password}))
+    let {userName:name,password:pwd}=req.body;
+    console.log(req.body);
+
+    //查询用户是否存在
+    userQuery.userListAllPromise({
+        name,
+        pwd
+    }).then((modules)=>{
+        console.log(modules);
+        if(modules.length){
+            let userInfo=modules[0];
+            delete userInfo['pwd'];
+            //生成token
+            let tokenStr=tokenUtil.createUserToken(userInfo);
+            res.send(tokenStr)
+        }else{
+            res.send(false)
+        }
+    }).catch((err)=>{
+        console.log(err);
+        res.send(false)
+    })
+    // //创建token
+    //
+
+
+
+
 })
 
 

@@ -36,7 +36,7 @@ router.get('/exist/:tid', function (req, res) {
     userManager.find({tid: tid}, function (err, models) {
         if (models.length) {
             //创建token
-            let tokenStr=createUserToken(models[0].uuid);
+            let tokenStr=tokenUtil.createUserToken(models[0].uuid);
             res.send(tokenStr);
         } else {
             res.send(false);
@@ -49,19 +49,19 @@ router.post('/wxRegister', function (req, res) {
     var user = req.body;
     userManager.add(user, function (err,module) {
         //创建token
-        let tokenStr=createUserToken(module.uuid);
+        let tokenStr=tokenUtil.createUserToken(module.uuid);
         // res.send(tokenStr);
         res.send(err == null ? tokenStr: err);
     })
 });
 
-function createUserToken(userId){
-    let tokenStr=tokenUtil.createToken({
-        userId
-    },Date.now()/1000+24*3600);
-    console.log("生成token成功");
-    return tokenStr;
-}
+// function createUserToken(userId){
+//     let tokenStr=tokenUtil.createToken({
+//         userId
+//     },Date.now()/1000+24*3600);
+//     console.log("生成token成功");
+//     return tokenStr;
+// }
 
 //更新登录时间等信息
 router.get('/updateInfo/:tid', function (req, res) {
