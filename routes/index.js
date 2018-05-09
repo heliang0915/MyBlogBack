@@ -18,15 +18,12 @@ router.get('/reload',function (req,res) {
 })
 
 router.post('/login',function (req,res) {
-    let {userName:name,password:pwd}=req.body;
-    console.log(req.body);
-
+    let {name,pwd}=req.body;
     //查询用户是否存在
     userQuery.userListAllPromise({
         name,
         pwd
     }).then((modules)=>{
-        console.log(modules);
         if(modules.length){
             let userInfo=modules[0];
             delete userInfo['pwd'];
@@ -40,12 +37,6 @@ router.post('/login',function (req,res) {
         console.log(err);
         res.send(false)
     })
-    // //创建token
-    //
-
-
-
-
 })
 
 
@@ -60,7 +51,4 @@ function  reload(callback) {
         }
     })
 }
-
-
-
 module.exports = router;

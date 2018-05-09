@@ -40,20 +40,11 @@ router.post('/list', function (req, res) {
 
 router.get('/single/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
-
-    // userQuery.getUserByUUIDPromise(uuid).then((modules)=>{
-    //     res.send(modules);
-    // }).catch((err)=>{
-    //     res.send(err);
-    // })
-
     getSingleUser(uuid).then((user)=>{
         res.send(user);
     }).catch((err)=>{
         res.send(err);
     })
-
-
     async function getSingleUser(uuid) {
         let user=await userQuery.getUserByUUIDPromise(uuid);
         user=user==null?{}:user
@@ -62,15 +53,7 @@ router.get('/single/:uuid', function (req, res) {
         user.roles=roles;
         console.log("getSingleUser>>>"+user);
         return user;
-
     }
-
-    // userManager.findByUUID(uuid, function (err, module) {
-    //     roleManager.findAll(function(err,roles){
-    //         module.roles=roles;
-    //         res.send(module);
-    //     })
-    // })
 })
 //获取用户信息
 router.get('/getUserInfo/:uuid', function (req, res) {
