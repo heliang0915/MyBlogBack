@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>canvas</title>
+  <style type="text/css">
+  body,div,canvas{
+    margin: 0;
+    padding: 0;
+  }
+    .box{
+      /* width:750px;
+      height:1334px;*/
+      zoom: 0.5;
+    }
+    canvas{
+      background: red;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+    <div class="box">
+      <canvas height="0" width="0" id='canvas'></canvas>
+      <img id="img">
+    </div>
+    <script type="text/javascript">
+        var dpr=window.devicePixelRatio;
+        var width=window.innerWidth;
+        var height=window.innerHeight;
+        var canvas=document.querySelector('#canvas');
+        var box=document.querySelector('.box');
+        var imgDom=document.querySelector('#img');
+        var lineHeight=58;
+        var fontSize=36;
+        var paddingSize=20;
+
+        var maxSize=Math.ceil((width*dpr-paddingSize)/fontSize);
+        // console.log(maxSize);
+
+        box.style.height=height*dpr+'px';
+        box.style.width=width*dpr+'px';
+        canvas.setAttribute('height',height*dpr);
+        canvas.setAttribute('width',width*dpr);
+
+        var str="中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!,中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!中华人民共和国中央人民政府，今天成立了~1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息!!!";
+        // var ps=["中华人民共和国中央人民政府，今天成立了~","1949年10月1日，毛主席在天南门广场上宣布这一令人振奋的消息"]
+        var ps=[];
+        var position=0;
+        while(true){
+              var temp=str.substr(position,maxSize);
+              if(temp){
+                ps.push(temp);
+                position+=maxSize;
+              }else{
+                  break;
+              }
+        }
+
+        var ctx=canvas.getContext('2d');
+        ctx.fillStyle='#000000';  //填充背景
+        ctx.fillRect(30,30,50*dpr,50*dpr); //绘制填充矩形
+        ctx.strokeRect(40,40,50*dpr,50*dpr); //绘制矩形但是没有边框
+        var img=new Image(); 
+        img.src="111111.jpg";
+        // img.setAttribute('crossOrigin', 'anonymous')
+        img.onload=function(){
+          ctx.drawImage(img,0,0,width*dpr,height*dpr);//全屏 绘制图
+          ctx.font=fontSize+"px 微软雅黑";
+          ctx.fillStyle="#FFF";
+          ps.forEach(function(item,index){
+              ctx.fillText(item,20,100+lineHeight*index,width*dpr-paddingSize*2); //参数 文本,x,y,maxWidth
+          })  
+
+          var strDataURI = canvas.toDataURL();
+
+          imgDom.src=strDataURI;
+
+
+        }
+    </script>
+</body>
+</html>

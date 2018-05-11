@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 100px;">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style type="text/css">
+    .box{
+      zoom:0.5;
+      /*width: 750px;*/
+      /*height: 667px;*/
+      /*overflow: hidden;*/
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+　　　　<canvas id="canvas"  style="border:1px solid red;"></canvas>
+　　</div>
+   <!-- <canvas id='canvas' style="width:750px;height:1300px;">
+   </canvas> -->
+   <script type="text/javascript">
+       var canvas = document.getElementById("canvas");
+       canvas.width=750;
+       canvas.height=1333;
+       // if (!canvas) return;
+       var context = canvas.getContext("2d");
+       var img = new Image();
+       // var img2 = new Image();
+       img.src = "活动/1.jpg";
+       // img2.src = "活动/mg.jpg";
+       img.onload = function () {
+            // 平铺方式
+            // context.fillStyle = context.createPattern(img,"no-repeat");
+            context.drawImage(img, 0, 0,375*2,667*2);
+            context.fillStyle='#000';
+            context.font="33px Arial";
+            context.fillText("安哥拉2",220,640); 
+            context.fillText("安哥",192,840); 
+            // drawText("Hello, World!What a nice day.",140,820,400);
+            // ctx.fillText("Hello World",10,50);         
+            // context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+         // img2.onload = function () {
+         //      context.drawImage(img2, 0, 0);
+         // }
+
+        function drawText(t,x,y,w){
+
+        var chr = t.split("");
+        var temp = "";              
+        var row = [];
+
+        context.font="30px Arial";
+        context.fillStyle = '#000';
+        // context.textBaseline = "middle";
+
+        for(var a = 0; a < chr.length; a++){
+            if( context.measureText(temp).width < w ){
+                ;
+            }
+            else{
+                row.push(temp);
+                temp = "";
+            }
+            temp += chr[a];
+        }
+
+        row.push(temp);
+
+        for(var b = 0; b < row.length; b++){
+            context.fillText(row[b],x,y+(b+1)*20);
+        }
+    }
+
+   </script>
+  
+</body>
+</html>

@@ -34,6 +34,7 @@ router.get('/exist/:tid', function (req, res) {
     var tid = req.params.tid;
     console.log("tid:" + tid);
     userManager.find({tid: tid}, function (err, models) {
+        console.log("用户是否注册过>>>>"+models.length)
         if (models.length) {
             //创建token
             let tokenStr=tokenUtil.createUserToken(models[0].uuid);
@@ -196,10 +197,11 @@ router.post('/blogZan', function (req, res) {
 //
 router.post('/myList',function (req, res) {
     let userId=util.userUtil.getUserId(req);
+    console.log("userId>>>"+userId);
     var currentPage = req.body.page;
     var type = req.body.listType;
 
-    // console.log(req.body);
+    console.log(req.body);
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
      if(type==1){
          //获取我的点赞文章列表

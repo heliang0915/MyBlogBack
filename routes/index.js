@@ -12,11 +12,30 @@ router.get('/', function(req, res, next) {
     res.render('index');
 });
 
+router.get('/cavas', function(req, res, next) {
+    res.render('cavas');
+});
+
 router.get('/reload',function (req,res) {
     reload();
     res.render('reload');
 })
 
+//校验token是否合法
+router.post('/checkToken',function (req,res) {
+    let {token}=req.body;
+    console.log("checkToken>>>>>>>>>>>");
+    token=decodeURIComponent(token);
+    // console.log(token)
+    if(token){
+        let validate=tokenUtil.checkToken(token);
+        console.log("validate>>>>>>>>>"+validate);
+        res.send(validate);
+    }else{
+        res.send(false);
+    }
+})
+//登录动作
 router.post('/login',function (req,res) {
     let {name,pwd}=req.body;
     //查询用户是否存在
@@ -28,7 +47,10 @@ router.post('/login',function (req,res) {
             let userInfo=modules[0];
             delete userInfo['pwd'];
             //生成token
+            // console.log("createUserToken>>>>"+JSON.stringify(userInfo));
             let tokenStr=tokenUtil.createUserToken(userInfo);
+            console.log("tokenStr>>>>>>>>>>>>>>>>>>>>>>"+tokenStr);
+
             res.send(tokenStr)
         }else{
             res.send(false)
@@ -38,7 +60,6 @@ router.post('/login',function (req,res) {
         res.send(false)
     })
 })
-
 
 function  reload(callback) {
     let reloadSh="sh reload.sh";
