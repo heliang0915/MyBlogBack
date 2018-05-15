@@ -24,6 +24,7 @@ router.post('/list',function(req,res){
                let  blog=info.models[i];
                let channel= await channelQuery.getChannelByUUIDPromise(blog.tag);
                 if(channel){
+                    console.dir(JSON.stringify(channel));
                     blog["channelName"] = channel.name;
                     blog["content"] = blog.content.substring(0, 120);
                 }
