@@ -23,8 +23,10 @@ router.post('/list',function(req,res){
             for(let i=0;i<info.models.length;i++){
                let  blog=info.models[i];
                let channel= await channelQuery.getChannelByUUIDPromise(blog.tag);
-                blog["channelName"] = channel.name;
-                blog["content"] = blog.content.substring(0, 120);
+                if(channel){
+                    blog["channelName"] = channel.name;
+                    blog["content"] = blog.content.substring(0, 120);
+                }
                 if(i==info.models.length-1){
                     info.channels=channels;
                     res.send(info);
