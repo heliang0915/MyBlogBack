@@ -53,7 +53,9 @@ router.get('/single/:uuid',function(req,res){
        if(uuid!=0){
            blog=await articleQuery.getArticleByUUIDPromise(uuid);
            let channel=await channelQuery.getChannelByUUIDPromise(blog.tag);
-           blog["channelName"]=channel.name;
+           if(channel){
+               blog["channelName"]=channel.name;
+           }
        }
         var json={
             channels,
