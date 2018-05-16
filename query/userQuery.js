@@ -96,8 +96,6 @@ function deletePromise(uuid){
     }))
 }
 
-
-
 module.exports = {
     userListPromise,
     userListAllPromise,

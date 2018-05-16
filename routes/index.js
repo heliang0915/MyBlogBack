@@ -24,12 +24,10 @@ router.get('/reload',function (req,res) {
 //校验token是否合法
 router.post('/checkToken',function (req,res) {
     let {token}=req.body;
-    console.log("checkToken>>>>>>>>>>>");
     token=decodeURIComponent(token);
     // console.log(token)
     if(token){
         let validate=tokenUtil.checkToken(token);
-        console.log("validate>>>>>>>>>"+validate);
         res.send(validate);
     }else{
         res.send(false);
@@ -49,8 +47,6 @@ router.post('/login',function (req,res) {
             //生成token
             // console.log("createUserToken>>>>"+JSON.stringify(userInfo));
             let tokenStr=tokenUtil.createUserToken(userInfo);
-            console.log("tokenStr>>>>>>>>>>>>>>>>>>>>>>"+tokenStr);
-
             res.send(tokenStr)
         }else{
             res.send(false)
