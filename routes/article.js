@@ -46,7 +46,6 @@ router.post('/list',function(req,res){
 
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-
     async  function  getSingle(uuid){
        let channels= await  channelQuery.getChannelALLPromise();
        let blog={};
