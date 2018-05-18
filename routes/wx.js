@@ -197,7 +197,6 @@ router.post('/blogZan', function (req, res) {
 //
 router.post('/myList',function (req, res) {
     let userId=util.userUtil.getUserId(req);
-    console.log("userId>>>"+userId);
     var currentPage = req.body.page;
     var type = req.body.listType;
 

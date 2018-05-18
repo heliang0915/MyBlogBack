@@ -48,16 +48,18 @@ router.get('/single/:uuid', function (req, res) {
     async function getSingleUser(uuid) {
         let user=await userQuery.getUserByUUIDPromise(uuid);
         user=user==null?{}:user
-        // console.log("user>>>"+user);
         let roles= await roleQuery.roleListAllPromise({});
         user.roles=roles;
-        console.log("getSingleUser>>>"+user);
         return user;
     }
 })
 //获取用户信息
-router.get('/getUserInfo/:uuid', function (req, res) {
-    var uuid = req.params.uuid == null ? 0 : req.params.uuid;
+router.post('/getUserInfo', function (req, res) {
+    // var uuid = req.params.uuid == null ? 0 : req.params.uuid;
+    var {uuid}=req.body;
+    if(uuid.length>32){ //如果大于32认为是tookenId
+        uuid=util.userUtil.getUserIdByToken(uuid)
+    }
     userQuery.getUserByUUIDPromise(uuid).then((module)=>{
         var json={};
         json.name=module.name;
@@ -70,16 +72,6 @@ router.get('/getUserInfo/:uuid', function (req, res) {
     }).catch((err)=>{
         res.send(err);
     })
-    // userManager.findByUUID(uuid, function (err, module) {
-    //     var json={};
-    //     json.name=module.name;
-    //     json.pic=module.pic;
-    //     json.uuid=module.uuid;
-    //     json.nickName=module.nickName;
-    //     json.roleId=module.roleId;
-    //     json.loginType=module.loginType;
-    //     res.send(json);
-    // })
 })
 
 router.post('/save', function (req, res) {

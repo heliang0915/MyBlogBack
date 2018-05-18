@@ -34,16 +34,12 @@ var token={
         var info=decArr[0];
         var signature=decArr[1];
         //将payload json字符串 解析为对象
-        // console.log(Buffer.from(info,"base64").toString("utf8"))
-
         try{
             payload=JSON.parse(Buffer.from(info,"base64").toString("utf8"));
         }catch(e){
             console.log(e);
             return false;
         }
-        // console.log("payload>>>>"+JSON.stringify(payload));
-
         //检验签名
         var hash=crypto.createHmac('sha256',secret);
         hash.update(decArr[0]);
@@ -61,7 +57,6 @@ var token={
         //设置token存活时间为1小时
         let tokenStr=this.createToken(userInfo,3600);
         return tokenStr;
-
     },
     checkToken:function(token){
         var resDecode=this.decodeToken(token);
@@ -70,9 +65,10 @@ var token={
         }
         //是否过期 返回true 表示不过期 返回false表示过期
         var expState=(parseInt(Date.now()/1000)-parseInt(resDecode.payload.created))>parseInt(resDecode.payload.exp)?false:true;
-       console.log("计算时间..."+(parseInt(Date.now()/1000)-parseInt(resDecode.payload.created)));
-       console.log("token存活时间..."+resDecode.payload.exp);
+       // console.log("token存活时间..."+resDecode.payload.exp);
+        let cha=(parseInt(Date.now()/1000)-parseInt(resDecode.payload.created));
         if(resDecode.signature===resDecode.checkSignature&&expState){
+            console.log(`token有效 存活时长:【${resDecode.payload.exp}】秒 在【${resDecode.payload.exp-cha}】秒后时效...`);
             return true;
         }
         return false;

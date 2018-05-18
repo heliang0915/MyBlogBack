@@ -79,6 +79,25 @@ function savePromise(uuid, model) {
 function getMenuByUUIDPromise(uuid) {
     return menuCache.findByUUID(uuid);
 }
+
+// /**
+//  * 根据用户ID获取该用户下有哪些菜单
+//  * @param uuid 菜单uuid
+//  * @returns {*}
+//  */
+// function getMenusByUserIdPromise(userId) {
+//     return new Promise(async (resolve, reject) => {
+//
+//         let menuListAllPromise=await  menuListAllPromise();
+//
+//
+//     });
+//
+//
+// }
+
+
+
 /**
  *  删除菜单
  * @param uuid 菜单uuid
