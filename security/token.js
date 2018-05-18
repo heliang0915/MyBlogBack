@@ -70,7 +70,6 @@ var token={
         if(resDecode.signature===resDecode.checkSignature&&expState){
             console.log(`token有效 存活时长:【${resDecode.payload.exp}】秒 在【${resDecode.payload.exp-cha}】秒后时效...`);
             return true;
-
         }
         return false;
     },
