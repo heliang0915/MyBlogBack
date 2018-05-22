@@ -55,7 +55,7 @@ router.get('/single/:uuid', function (req, res) {
       ary = ary.concat(menus);
         var json = {
             menus: ary,
-            menu: module
+            menu: module==null?{}:module
         }
         // res.send(json);
         return json
