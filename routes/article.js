@@ -1,12 +1,15 @@
 var express=require("express")
 var moment=require("moment");
+var util=require("../util/util");
 var router=express.Router();
 var  channelQuery= require("../query/channelQuery");
 var  articleQuery= require("../query/articleQuery");
+var  userQuery= require("../query/userQuery");
 
 //获取文章列表
 router.post('/list',function(req,res){
     var currentPage=req.body.page;
+    // console.log(req.headers);
     var params=req.body.params;
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
     var query={};
@@ -23,24 +26,23 @@ router.post('/list',function(req,res){
             for(let i=0;i<info.models.length;i++){
                let  blog=info.models[i];
                let channel= await channelQuery.getChannelByUUIDPromise(blog.tag);
-                if(channel){
+               if(channel){
                     console.dir(JSON.stringify(channel));
                     blog["channelName"] = channel.name;
                     blog["content"] = blog.content.substring(0, 120);
-                }
-                if(i==info.models.length-1){
-                    info.channels=channels;
-                    res.send(info);
-                }
+               }
             }
-        }else{
-            info.channels=channels;
-            var end=new Date().getTime();
-            console.log("返回给服务"+"耗时:"+(end-start)+"ms")
-            res.send(info);
         }
+        info.channels=channels;
+        return info;
     }
-    getBlogList();
+    getBlogList().then((info)=>{
+        // console.log("info"+JSON.stringify(info));
+        res.send(info);
+    }).catch((err)=>{
+        console.log("er>>>"+err);
+        res.send(err);
+    });
 })
 
 
@@ -70,27 +72,47 @@ router.get('/single/:uuid',function(req,res){
 })
 
 router.post('/save',function(req,res){
-    var article=req.body;
-    var title=article.title;
-    var content=article.content;
-    var uuid=article.uuid;
-    var tag=article.tag;
-    var pic=article.pic;
-    var pubUser=article.pubUser;
-    var articleModel={
-        title,
-        content,
-        tag,
-        pic,
-        date: moment().format("YYYY-MM-DD HH:mm:ss"),
-        pubUser:pubUser==null?"张三":pubUser
-    }
+        var article=req.body;
+        var title=article.title;
+        var content=article.content;
+        var uuid=article.uuid;
+        var tag=article.tag;
+        var pic=article.pic;
+        // var pubUser=article.pubUser;
+        let userId=util.userUtil.getTokenFromReq(req);
+        async function saveArticle() {
+           let userModel=await userQuery.getUserByUUIDPromise(userId);
+            var articleModel={
+                title,
+                content,
+                tag,
+                pic,
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
+                pubUser:(userModel==null?"平台默认":userModel.nickName)
+            }
+           await  articleQuery.savePromise(uuid,uuid==null?articleModel:article);
+        }
 
-    articleQuery.savePromise(uuid,uuid==null?articleModel:article).then((err)=>{
-        res.send("ok");
-    }).catch(()=>{
-        res.send(err);
-    })
+        saveArticle().then(()=>{
+            res.send("ok");
+        }).catch((err)=>{
+            res.send(err);
+        })
+
+        // var articleModel={
+        //     title,
+        //     content,
+        //     tag,
+        //     pic,
+        //     date: moment().format("YYYY-MM-DD HH:mm:ss"),
+        //     pubUser:pubUser==null?"张三":pubUser
+        // }
+        //
+        // articleQuery.savePromise(uuid,uuid==null?articleModel:article).then((err)=>{
+        //     res.send("ok");
+        // }).catch(()=>{
+        //     res.send(err);
+        // })
 
 })
 
