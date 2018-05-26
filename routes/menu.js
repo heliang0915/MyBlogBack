@@ -55,7 +55,7 @@ router.get('/single/:uuid', function (req, res) {
       ary = ary.concat(menus);
         var json = {
             menus: ary,
-            menu: module
+            menu: module==null?{}:module
         }
         // res.send(json);
         return json
@@ -112,7 +112,10 @@ router.get('/getChildMenu/:uuid', function (req, res) {
         })
     }
     async function getChildren(uuid) {
+        let json={};
         var children = await getChild(uuid);
+        var menus = await menuQuery.menuListAllPromise({});
+
         for (var i = 0; i < children.length; i++) {
             var item = children[i];
             var c1 = await getChild(item.uuid);
@@ -123,7 +126,9 @@ router.get('/getChildMenu/:uuid', function (req, res) {
             }
             item.children = c1;
         }
-        res.send(children);
+        json.menus=menus;
+        json.menustruct=children;
+        res.send(json);
     }
 });
 

@@ -26,6 +26,17 @@ let util={
             let userId=tokenUtil.getByKey(token,"uuid");
             console.log("token中解析的userId为:"+userId);
             return userId;
+        },
+        getTokenFromReq(req){
+            let token=req.headers.token;
+            let userId=0;
+            if(token){
+                userId=this.getUserIdByToken(token);
+                console.log("userId>>>"+userId);
+            }else{
+                console.log("没有获取到token信息");
+            }
+            return userId;
         }
     }
 
