@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var tokenUtil=require("../security/token");
 let userQuery=require("../query/userQuery");
+let channelQuery=require("../query/channelQuery");
 var process = require('child_process');
 router.all('*', function(req, res, next) {
     res.type('html');
@@ -15,6 +16,12 @@ router.get('/', function(req, res, next) {
 router.get('/cavas', function(req, res, next) {
     res.render('cavas');
 });
+
+router.all('/getTree',(req,res)=>{
+    channelQuery.getChannelAllTree('0').then((tree)=>{
+        res.send(JSON.stringify(tree));
+    })
+})
 
 router.get('/reload',function (req,res) {
     reload();

@@ -8,6 +8,11 @@ var channelModel=new Schema({
      uuid:String,
      name:String, //栏目名称
      note:String,  //描述
+     pid:String, //父级
+     rank:{
+         type:Number,
+         default:1
+     },  //频道等级
      order:Number
 })
 
