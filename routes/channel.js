@@ -35,8 +35,14 @@ router.post('/list',function(req,res){
 })
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
+    var info={};
     channelQuery.getChannelByUUIDPromise(uuid).then((module)=>{
-        res.send(module);
+        channelQuery.getChannelAllTree(uuid).then((channels)=>{
+            info.channel=module;
+            info.channels=channels;
+            console.log("info::::::"+JSON.stringify(info));
+            res.send(info);
+        })
     }).catch((err)=>{
         res.send(err);
     })
@@ -47,9 +53,13 @@ router.post('/save',function(req,res){
     var name=channel.name;
     var note=channel.note;
     var uuid=channel.uuid;
+    var rank=channel.rank;
+    var pid=channel.pid;
     var channelModel={
         name,
-        note
+        note,
+        rank,
+        pid
     }
     channelQuery.savePromise(uuid,uuid==null?channelModel:channel).then(()=>{
         res.send("ok");
