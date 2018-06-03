@@ -19,6 +19,7 @@ function getChannelByUUIDPromise(uuid){
     return channelCache.findByUUID(uuid);
 }
 
+
 /**
  * 查询所有频道信息
  * @returns {*}
@@ -183,7 +184,6 @@ function pagePromise(currentPage,query,sort,pageSize){
                 }else{
                     channel= await getChannelByUUIDPromise(pid);
                 }
-                console.log("channel:::::"+JSON.stringify(channel));
                 let {name}=channel;
                 model.pName=name;
             }
@@ -198,6 +198,7 @@ module.exports={
     getChannelByUUIDPromise,
     getChannelALLPromise,
     getChannelAllTree,
+    getChannelByPid,
     savePromise,
     deletePromise,
     pagePromise

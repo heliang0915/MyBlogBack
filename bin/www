@@ -39,9 +39,9 @@ var server = http.createServer(app);
  */
 
 server.listen(port);
-httpsServer.listen('4430');
-httpsServer.on('listening',onHttpServerListening)
-httpsServer.on('error',onError);
+// httpsServer.listen('4430');
+// httpsServer.on('listening',onHttpServerListening)
+// httpsServer.on('error',onError);
 server.on('error', onError);
 server.on('listening', onListening);
 
