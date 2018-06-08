@@ -116,6 +116,34 @@ function deletePromise(uuid){
 }
 
 
+function getChildrenByPid(parentId) {
+    return menuCache.find({parentId});
+}
+
+// async  function getMenuTree(uuid){
+//     let rootNode={
+//         uuid:'-1',
+//         pid:'-2',
+//         name:'根'
+//     }
+//
+//     if(uuid){
+//         rootNode=await menuListAllPromise({"parentId": uuid},{order: 1})
+//     }
+//
+//     async  function getChildren(node) {
+//         let children=await getChildrenByPid(node.uuid);
+//         if(children.length>0){
+//             node.children=children;
+//             for(let child of children){
+//                 await getChildren(child);
+//             }
+//         }
+//     }
+//     await getChildren(rootNode)
+//     return rootNode;
+// }
+
 
 module.exports = {
     menuListPromise,

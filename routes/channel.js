@@ -18,20 +18,6 @@ router.post('/list',function(req,res){
     }).catch((err)=>{
         res.send(err);
     })
-
-    // channelQuery.getChannelALLPromise().then(info=>{
-    //     res.send(info);
-    // }).catch((err)=>{
-    //     res.send(err);
-    // })
-
-
-
-    // channelQuery.pagePromise(currentPage, query,sort,pageSize).then(info=>{
-    //     res.send(info);
-    // }).catch((err)=>{
-    //     res.send(err);
-    // })
 })
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
@@ -70,10 +56,17 @@ router.post('/save',function(req,res){
 
 router.get('/delete/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
-    channelQuery.deletePromise(uuid).then(()=>{
-        res.send("ok");
-    }).catch((err)=>{
-        res.send(err);
+
+    channelQuery.getChannelByPid(uuid).then((children)=>{
+        if(children.length==0){
+            channelQuery.deletePromise(uuid).then(()=>{
+                res.send("ok");
+            }).catch((err)=>{
+                res.send(err);
+            })
+        }else{
+            res.send("该栏目下有子栏目不允许删除");
+        }
     })
 })
 

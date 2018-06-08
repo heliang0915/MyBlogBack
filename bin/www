@@ -16,13 +16,13 @@ var https = require('https');
  */
 
 //添加 Create HTTPS server.
-// var options = {
-//     key: fs.readFileSync(path.join(__dirname,'../certificate/private.key')),
-//     cert: fs.readFileSync(path.join(__dirname,'../certificate/full_chain.pem'))
-// };
+var options = {
+    key: fs.readFileSync(path.join(__dirname,'../certificate/private.key')),
+    cert: fs.readFileSync(path.join(__dirname,'../certificate/full_chain.pem'))
+};
 
 // var httpServer = http.createServer(app);
-// var httpsServer = https.createServer(options,app);
+var httpsServer = https.createServer(options,app);
 
 
 var port = normalizePort(process.env.PORT || '8080');
