@@ -21,6 +21,7 @@ var blogModel=new Schema({
      uuid:String,
      title:String,
      content:String,
+     contentTxt:String,
      tag:String,//标签
      pic:String,//图片
      date:String, //发布时间

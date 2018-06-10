@@ -49,7 +49,7 @@ router.post('/list',function(req,res){
 router.get('/single/:uuid',function(req,res){
     var uuid=req.params.uuid==null?0:req.params.uuid;
     async  function  getSingle(uuid){
-       let channels= await  channelQuery.getChannelAllTree();
+       let channels= await  channelQuery.getChannelALLPromise();
         console.log("channels::::"+JSON.stringify(channels));
        let blog={};
        if(uuid!=0){
@@ -75,6 +75,8 @@ router.post('/save',function(req,res){
         var article=req.body;
         var title=article.title;
         var content=article.content;
+        var contentTxt=article.contentTxt;
+        console.log("contentTxt$$$"+contentTxt);
         var uuid=article.uuid;
         var tag=article.tag;
         var pic=article.pic;
@@ -85,6 +87,7 @@ router.post('/save',function(req,res){
             var articleModel={
                 title,
                 content,
+                contentTxt,
                 tag,
                 pic,
                 date: moment().format("YYYY-MM-DD HH:mm:ss"),
