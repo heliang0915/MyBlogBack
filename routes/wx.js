@@ -86,6 +86,7 @@ router.post('/blogList', function (req, res) {
     var currentPage = req.body.page;
     var params = req.body.params;
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
+    var pageSize=req.body.pageSize||10;
     var query = {};
     if (params && params.title) {
         query['title'] = new RegExp(params.title);
@@ -99,14 +100,16 @@ router.post('/blogList', function (req, res) {
         sort[ params.search_field] =-1;
     }
     async function getArticleList() {
-        let info = await  articleQuery.articleListPromise(currentPage, query,sort);
+        let info = await  articleQuery.articleListPromise(currentPage, query,sort,pageSize);
         //普通模式下 不需要在排序评论信息的 直接返回以节省性能
         if(params.search_field==null||(params.search_field!="cv"&&params.search_field!="zan")){
             for (let module of info.models) {
                 let count = await commentQuery.getCommentCount(module.uuid);
                 let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
+                let channel = await channelQuery.getChannelByUUIDPromise(module.tag);
                 module['commentSize'] = count;
                 module['zanSize'] = zanCount;
+                module['channelName'] = channel.name;
             }
             return info;
         }else{
@@ -117,8 +120,10 @@ router.post('/blogList', function (req, res) {
             for (let module of info.models) {
                 let count = await commentQuery.getCommentCount(module.uuid);
                 let zanCount= await  zanQuery.getZanCountByBlogId(module.uuid);
+                let channel = await channelQuery.getChannelByUUIDPromise(module.tag);
                 module['commentSize'] = count;
                 module['zanSize'] = zanCount;
+                module['channelName'] = channel.name;
             }
             if(params.search_field=="cv"){
 
@@ -144,8 +149,8 @@ router.post('/blogList', function (req, res) {
         res.send(err);
     })
 });
-//wx 获取单个文章
 
+//wx 获取单个文章
 router.get('/blogSingle/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
     async function getSingle(uuid) {

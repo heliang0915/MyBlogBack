@@ -11,6 +11,8 @@ router.post('/list',function(req,res){
     var currentPage=req.body.page;
     // console.log(req.headers);
     var params=req.body.params;
+    var pageSize=req.body.pageSize||10;
+
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
     var query={};
     if(params&&params.title){
@@ -20,7 +22,7 @@ router.post('/list',function(req,res){
         query['tag']=params.tag;
     }
     async function getBlogList() {
-        let info = await articleQuery.articleListPromise(currentPage,query);
+        let info = await articleQuery.articleListPromise(currentPage,query,pageSize);
         let channels = await channelQuery.getChannelALLPromise();
         if(info.models.length>0) {
             for(let i=0;i<info.models.length;i++){
