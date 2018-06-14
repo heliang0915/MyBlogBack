@@ -23,6 +23,7 @@ function articleListPromise(currentPage, query,sort,ps) {
         order:-1
     }
     sort=sort==null?defaultSort:sort;
+    console.log("ps:::::::::::::::"+ps);
     return blogCache.page(currentPage, query,sort,ps);
 }
 
@@ -36,6 +37,7 @@ function articleListAllPromise(query,sort) {
     let defaultSort={
         order:-1
     }
+    query=query==null?{}:query;
     sort=sort==null?defaultSort:sort;
     return blogCache.find(query,sort);
 }

@@ -8,10 +8,6 @@ router.post('/list',function(req,res){
     var params=req.body.page.params;
     var pageSize=req.body.pageSize;
     var query={};
-    // if(params&&params.title){
-    //     query['name']=new RegExp(params.title);
-    //     // delete  params.title;
-    // }
     if(params){
         for(let key in params){
             if(params.title){
@@ -23,14 +19,11 @@ router.post('/list',function(req,res){
             }
         }
     }
-
-    // console.log(JSON.stringify(query));
-
-
+    console.log("query$$$$$$$$$"+JSON.stringify(query));
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
     sort=sort==null?{order:-1}:sort;
-
     console.log(JSON.stringify(query));
+    console.log(sort);
     channelQuery.pagePromise(currentPage, query,sort,pageSize).then(info=>{
         res.send(info);
     }).catch((err)=>{
