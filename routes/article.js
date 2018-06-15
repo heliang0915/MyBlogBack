@@ -49,6 +49,10 @@ router.post('/list',function(req,res){
 
 
 router.get('/single/:uuid',function(req,res){
+    // let userId=util.userUtil.getTokenFromReq(req);
+    //
+    // console.log("userId$$$$$$$$$$$$$"+userId);
+
     var uuid=req.params.uuid==null?0:req.params.uuid;
     async  function  getSingle(uuid){
        let channels= await  channelQuery.getChannelALLPromise();
@@ -74,6 +78,7 @@ router.get('/single/:uuid',function(req,res){
 })
 
 router.post('/save',function(req,res){
+
         var article=req.body;
         var title=article.title;
         var content=article.content;
@@ -84,8 +89,10 @@ router.post('/save',function(req,res){
         var pic=article.pic;
         // var pubUser=article.pubUser;
         let userId=util.userUtil.getTokenFromReq(req);
+        console.log("userID:::::::::::"+userId);
         async function saveArticle() {
            let userModel=await userQuery.getUserByUUIDPromise(userId);
+           console.log("userModel:::::::::::::"+JSON.stringify(userModel));
             var articleModel={
                 title,
                 content,
@@ -93,7 +100,7 @@ router.post('/save',function(req,res){
                 tag,
                 pic,
                 date: moment().format("YYYY-MM-DD HH:mm:ss"),
-                pubUser:(userModel==null?"平台默认":userModel.nickName)
+                pubUser:(userModel==null?"平台默认":(userModel.nickName||userModel.name))
             }
            await  articleQuery.savePromise(uuid,uuid==null?articleModel:article);
         }
