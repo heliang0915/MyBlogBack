@@ -76,7 +76,6 @@ router.post('/save',function(req,res){
         var title=article.title;
         var content=article.content;
         var contentTxt=article.contentTxt;
-        console.log("contentTxt$$$"+contentTxt);
         var uuid=article.uuid;
         var tag=article.tag;
         var pic=article.pic;
