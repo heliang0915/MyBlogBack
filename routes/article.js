@@ -22,9 +22,9 @@ router.post('/list',function(req,res){
         query['tag']=params.tag;
     }
     async function getBlogList() {
-        let info = await articleQuery.articleListPromise(currentPage,query,pageSize,{
+        let info = await articleQuery.articleListPromise(currentPage,query,{
             date:-1
-        });
+        },pageSize);
         let channels = await channelQuery.getChannelALLPromise();
         if(info.models.length>0) {
             for(let i=0;i<info.models.length;i++){

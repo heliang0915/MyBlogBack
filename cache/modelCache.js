@@ -38,6 +38,9 @@ cacheAry.forEach(function (item,index){
                                
                                 let filed=Object.keys(sort)[0];
                                 let val=sort[filed];
+                                
+                                console.log("#############"+val);
+                                console.log("#############"+filed);
         
                                 //查询
                                 if(Object.keys(query).length){
@@ -46,10 +49,21 @@ cacheAry.forEach(function (item,index){
                                 //排序
                                 if(Object.keys(sort).length){
                                     modules.sort((a,b)=>{
-                                        
-                                        return (a[filed]-b[filed])*val;
+                                            var aVal=a[filed];
+                                            var bVal=b[filed];
+                                            if(aVal.indexOf('-')>-1){
+                                                aVal=new Date(aVal).getTime();
+                                                bVal=new Date(bVal).getTime();
+                                            }
+                                        return (aVal-bVal)*val;
                                     })
+                                    console.log(modules);
                                 }
+                                
+                                
+                                
+                                
+                                
                                 let total=modules.length;
                                  let start=pageSize*(currentPage-1);
                                 let end=currentPage*pageSize;

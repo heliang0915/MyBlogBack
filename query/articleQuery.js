@@ -23,6 +23,7 @@ function articleListPromise(currentPage, query,sort,ps) {
         order:-1
     }
     sort=sort==null?defaultSort:sort;
+    console.log("=============>>>>>>>>>"+JSON.stringify(sort));
     return blogCache.page(currentPage, query,sort,ps);
 }
 
