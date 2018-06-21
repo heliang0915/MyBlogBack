@@ -45,11 +45,13 @@ cacheAry.forEach(function (item,index){
                                     modules.sort((a,b)=>{
                                             var aVal=a[filed];
                                             var bVal=b[filed];
+                                            var tempA=aVal;
+                                            var tempB=bVal;
                                             if(aVal.indexOf('-')>-1){
-                                                aVal=new Date(aVal).getTime();
-                                                bVal=new Date(bVal).getTime();
+                                                tempA=new Date(aVal).getTime();
+                                                tempB=new Date(bVal).getTime();
                                             }
-                                        return (aVal-bVal)*val;
+                                        return (tempA-tempB)*val;
                                     })
                                 }
                                 let total=modules.length;
