@@ -18,7 +18,9 @@ async function getBlogList(params, currentPage, pageSize) {
         query['tag'] = params.tag;
     }
     //排行榜排序字段
-    let sort = {};
+    let sort = {
+        date:-1 //默认按时间排序
+    };
     if (params && params.search_field) {
         sort[params.search_field] = -1;
     }
