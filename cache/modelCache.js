@@ -47,9 +47,11 @@ cacheAry.forEach(function (item,index){
                                             var bVal=b[filed];
                                             var tempA=aVal;
                                             var tempB=bVal;
-                                            if(aVal.indexOf('-')>-1){
-                                                tempA=new Date(aVal).getTime();
-                                                tempB=new Date(bVal).getTime();
+                                            if(typeof aVal =='string'){
+                                                if(aVal.indexOf('-')>-1){
+                                                    tempA=new Date(aVal).getTime();
+                                                    tempB=new Date(bVal).getTime();
+                                                }
                                             }
                                         return (tempA-tempB)*val;
                                     })
