@@ -22,7 +22,9 @@ router.post('/list',function(req,res){
         query['tag']=params.tag;
     }
     async function getBlogList() {
-        let info = await articleQuery.articleListPromise(currentPage,query,pageSize);
+        let info = await articleQuery.articleListPromise(currentPage,query,pageSize,{
+            date:-1
+        });
         let channels = await channelQuery.getChannelALLPromise();
         if(info.models.length>0) {
             for(let i=0;i<info.models.length;i++){
@@ -39,7 +41,6 @@ router.post('/list',function(req,res){
         return info;
     }
     getBlogList().then((info)=>{
-        // console.log("info"+JSON.stringify(info));
         res.send(info);
     }).catch((err)=>{
         console.log("er>>>"+err);
@@ -49,10 +50,6 @@ router.post('/list',function(req,res){
 
 
 router.get('/single/:uuid',function(req,res){
-    // let userId=util.userUtil.getTokenFromReq(req);
-    //
-    // console.log("userId$$$$$$$$$$$$$"+userId);
-
     var uuid=req.params.uuid==null?0:req.params.uuid;
     async  function  getSingle(uuid){
        let channels= await  channelQuery.getChannelALLPromise();
@@ -78,7 +75,6 @@ router.get('/single/:uuid',function(req,res){
 })
 
 router.post('/save',function(req,res){
-
         var article=req.body;
         var title=article.title;
         var content=article.content;
@@ -89,10 +85,9 @@ router.post('/save',function(req,res){
         var pic=article.pic;
         // var pubUser=article.pubUser;
         let userId=util.userUtil.getTokenFromReq(req);
-        console.log("userID:::::::::::"+userId);
+        // console.log("userID:::::::::::"+userId);
         async function saveArticle() {
            let userModel=await userQuery.getUserByUUIDPromise(userId);
-           console.log("userModel:::::::::::::"+JSON.stringify(userModel));
             var articleModel={
                 title,
                 content,
@@ -110,21 +105,6 @@ router.post('/save',function(req,res){
         }).catch((err)=>{
             res.send(err);
         })
-
-        // var articleModel={
-        //     title,
-        //     content,
-        //     tag,
-        //     pic,
-        //     date: moment().format("YYYY-MM-DD HH:mm:ss"),
-        //     pubUser:pubUser==null?"张三":pubUser
-        // }
-        //
-        // articleQuery.savePromise(uuid,uuid==null?articleModel:article).then((err)=>{
-        //     res.send("ok");
-        // }).catch(()=>{
-        //     res.send(err);
-        // })
 
 })
 
