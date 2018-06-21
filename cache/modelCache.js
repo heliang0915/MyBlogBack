@@ -34,14 +34,8 @@ cacheAry.forEach(function (item,index){
                         if(ext){
                             cache.get('${fnPrefix}:all',(err,modules)=>{
                                 var pageSize = ps||config.mongo.pageSize;
-                                
-                               
                                 let filed=Object.keys(sort)[0];
                                 let val=sort[filed];
-                                
-                                console.log("#############"+val);
-                                console.log("#############"+filed);
-        
                                 //查询
                                 if(Object.keys(query).length){
                                     modules=queryParse.filterByQuery(query,modules)
@@ -57,15 +51,9 @@ cacheAry.forEach(function (item,index){
                                             }
                                         return (aVal-bVal)*val;
                                     })
-                                    console.log(modules);
                                 }
-                                
-                                
-                                
-                                
-                                
                                 let total=modules.length;
-                                 let start=pageSize*(currentPage-1);
+                                let start=pageSize*(currentPage-1);
                                 let end=currentPage*pageSize;
                                 end=end>total?total:end;
                                 var info={
