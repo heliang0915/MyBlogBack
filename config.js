@@ -10,7 +10,7 @@ var config = {
         url : 'mongodb://www.blogapi.top:27017/blogTest',
 
         //分页
-        pageSize: 5
+        pageSize: 7
     },
     wx: {
         appId: "wx4abeef7a084d03d6",

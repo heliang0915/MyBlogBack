@@ -28,7 +28,7 @@ let query={
         let end=currentPage*pageSize;
         end=end>total?total:end;
         info.total=total;
-        info.pageSize=currentPage;
+        info.pageSize=pageSize;
         info.models=modules.slice(start,end);
         console.log("内存分页模式...");
         return info;

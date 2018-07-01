@@ -34,11 +34,8 @@ cacheAry.forEach(function (item,index){
                         if(ext){
                             cache.get('${fnPrefix}:all',(err,modules)=>{
                                 var pageSize = ps||config.mongo.pageSize;
-                                
-                               
                                 let filed=Object.keys(sort)[0];
                                 let val=sort[filed];
-        
                                 //查询
                                 if(Object.keys(query).length){
                                     modules=queryParse.filterByQuery(query,modules)
@@ -46,12 +43,21 @@ cacheAry.forEach(function (item,index){
                                 //排序
                                 if(Object.keys(sort).length){
                                     modules.sort((a,b)=>{
-                                        
-                                        return (a[filed]-b[filed])*val;
+                                            var aVal=a[filed];
+                                            var bVal=b[filed];
+                                            var tempA=aVal;
+                                            var tempB=bVal;
+                                            if(typeof aVal =='string'){
+                                                if(aVal.indexOf('-')>-1){
+                                                    tempA=new Date(aVal).getTime();
+                                                    tempB=new Date(bVal).getTime();
+                                                }
+                                            }
+                                        return (tempA-tempB)*val;
                                     })
                                 }
                                 let total=modules.length;
-                                 let start=pageSize*(currentPage-1);
+                                let start=pageSize*(currentPage-1);
                                 let end=currentPage*pageSize;
                                 end=end>total?total:end;
                                 var info={
