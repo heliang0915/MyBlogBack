@@ -44,39 +44,48 @@ async function getBlogListByUserId(userId, currentPage, type = 1) {
     query.userId = tid;
     //查询某人的评论信息
     let comments = await  commentCache.find(query);
-    // console.log(query);
+    console.log("comments:::::::::::"+comments.length);
     for (let commentModel of comments) {
+
         let {blogId} = commentModel;
         let blog = await blogCache.findByUUID(blogId);
-        let count = await getCommentCount(blogId);
-        let zanCount= await  zanQuery.getZanCountByBlogId(blogId);
-        let desc = "";
-        let $ = cheerio.load(blog.content);
-        let regText = /<p.*?>(.*?)<\/p>/g;
-        let isText = false;
-        blog.content.replace(regText, function (item, small) {
-            item = small.replace(/&nbsp/g, '').replace(/;/g, '').replace(/<br>/, '');
-            var $ = cheerio.load(item);
-            var src = $("img").attr('src');
-            if (src) {
-                isText = false;
-            } else {
-                if (isText == false && item) {
-                    desc = item;
-                    isText = true;
-                }
-            }
-        });
+        // let count = await getCommentCount(blogId);
+        // let zanCount= await  zanQuery.getZanCountByBlogId(blogId);
+        // let desc = "";
+        // let $ = cheerio.load(blog.content);
+        // let regText = /<p.*?>(.*?)<\/p>/g;
+        // let isText = false;
+        // blog.content.replace(regText, function (item, small) {
+        //     item = small.replace(/&nbsp/g, '').replace(/;/g, '').replace(/<br>/, '');
+        //     var $ = cheerio.load(item);
+        //     var src = $("img").attr('src');
+        //     if (src) {
+        //         isText = false;
+        //     } else {
+        //         if (isText == false && item) {
+        //             desc = item;
+        //             isText = true;
+        //         }
+        //     }
+        // });
         //描述信息
-        blog.desc = util.stringUtil.substr(desc, 90);
-        blog['commentSize'] = count;
-        blog['zanSize'] = zanCount;
+        // blog.desc = util.stringUtil.substr(desc, 90);
+        // blog['commentSize'] = count;
+        // blog['zanSize'] = zanCount;
+
+        console.log("blog:::::::::::::::"+JSON.stringify(blog.uuid));
         blogs.push(blog);
     }
+
+    console.log("blog::::去重.............");
     //去重
     blogs = queryParse.getNoRepeatQuery(blogs);
+
+    console.log("blog::::size:::::"+blogs.length);
     //内存分页
     let info = queryParse.getPageQuery(currentPage, blogs);
+
+
     return info;
 }
 
