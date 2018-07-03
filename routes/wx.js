@@ -17,7 +17,6 @@ let {getBlogList,getSingle}=require("./common");
 // let queryParse=require("../cache/util/queryParse")
 let  appId = wx.appId;
 let secret = wx.secret;
-
 userManager = new userManager();
 //登录
 router.get('/login/:code', function (req, res) {
