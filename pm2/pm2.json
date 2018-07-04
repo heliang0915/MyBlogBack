@@ -2,7 +2,7 @@
  * 生产环境下的部署配置
  */
 {
-  "name"             : "blogAPI",
+  "name"             : "BlogAPI",
   "script"           : "bin/www",
   "log_date_format"  : "YYYY-MM-DD HH:mm:ss Z",
   "error_file"       : "pm2/logs/error.log",
