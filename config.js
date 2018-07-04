@@ -18,7 +18,7 @@ var config = {
     },
     redis:{
        port:6379,
-       host:'www.blogapi.top'
+       host:'127.0.0.1'
     }
 }
 
