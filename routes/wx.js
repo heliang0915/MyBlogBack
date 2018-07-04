@@ -162,11 +162,12 @@ router.post('/myList',function (req, res) {
          })
      }else {
          //获取我的评论文章列表
+
          commentQuery.getBlogListByUserId(userId,currentPage).then((info)=>{
              console.log("获取我的评论文章列表...........");
              res.send(info)
          }).catch((err)=>{
-             console.log("获取我的评论文章列表 出错...");
+             console.log("获取我的评论文章列表 出错..."+err);
              res.send(err)
          })
      }

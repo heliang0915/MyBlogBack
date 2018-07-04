@@ -35,10 +35,12 @@ async function getBlogListByUserId(userId, currentPage, type = 1) {
     let blogs = [];
     let tid = -1;
     let query = {type: 1};
+
     if (type != 1) {
         tid = userId;
     } else {  //type==1 为微信需将userId转换为tid
         let userModel = await userCache.findByUUID(userId);
+        console.log("userId@@@@@@@@@@@@@@@@@11111111"+userId);
         tid = userModel.tid;
     }
     query.userId = tid;
@@ -48,33 +50,37 @@ async function getBlogListByUserId(userId, currentPage, type = 1) {
     for (let commentModel of comments) {
 
         let {blogId} = commentModel;
-        let blog = await blogCache.findByUUID(blogId);
-        // let count = await getCommentCount(blogId);
-        // let zanCount= await  zanQuery.getZanCountByBlogId(blogId);
-        // let desc = "";
-        // let $ = cheerio.load(blog.content);
-        // let regText = /<p.*?>(.*?)<\/p>/g;
-        // let isText = false;
-        // blog.content.replace(regText, function (item, small) {
-        //     item = small.replace(/&nbsp/g, '').replace(/;/g, '').replace(/<br>/, '');
-        //     var $ = cheerio.load(item);
-        //     var src = $("img").attr('src');
-        //     if (src) {
-        //         isText = false;
-        //     } else {
-        //         if (isText == false && item) {
-        //             desc = item;
-        //             isText = true;
-        //         }
-        //     }
-        // });
-        //描述信息
-        // blog.desc = util.stringUtil.substr(desc, 90);
-        // blog['commentSize'] = count;
-        // blog['zanSize'] = zanCount;
 
-        console.log("blog:::::::::::::::"+JSON.stringify(blog.uuid));
-        blogs.push(blog);
+        if(blogId){
+            let blog = await blogCache.findByUUID(blogId);
+            // let count = await getCommentCount(blogId);
+            // let zanCount= await  zanQuery.getZanCountByBlogId(blogId);
+            // let desc = "";
+            // let $ = cheerio.load(blog.content);
+            // let regText = /<p.*?>(.*?)<\/p>/g;
+            // let isText = false;
+            // blog.content.replace(regText, function (item, small) {
+            //     item = small.replace(/&nbsp/g, '').replace(/;/g, '').replace(/<br>/, '');
+            //     var $ = cheerio.load(item);
+            //     var src = $("img").attr('src');
+            //     if (src) {
+            //         isText = false;
+            //     } else {
+            //         if (isText == false && item) {
+            //             desc = item;
+            //             isText = true;
+            //         }
+            //     }
+            // });
+            //描述信息
+            // blog.desc = util.stringUtil.substr(desc, 90);
+            // blog['commentSize'] = count;
+            // blog['zanSize'] = zanCount;
+            if(blog){
+                // console.log("blog:::::::::::::::"+JSON.stringify(blog.uuid));
+                blogs.push(blog);
+            }
+        }
     }
 
     console.log("blog::::去重.............");
@@ -84,7 +90,6 @@ async function getBlogListByUserId(userId, currentPage, type = 1) {
     console.log("blog::::size:::::"+blogs.length);
     //内存分页
     let info = queryParse.getPageQuery(currentPage, blogs);
-
 
     return info;
 }
