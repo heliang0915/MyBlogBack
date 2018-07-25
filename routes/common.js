@@ -8,9 +8,9 @@ let channelQuery = require('../query/channelQuery');
 let queryParse = require("../cache/util/queryParse")
 
 //获取blogList
-
-async function getBlogList(params, currentPage, pageSize) {
+async function getBlogList(params, currentPage, pageSize,isWeb) {
     var query = {};
+    isWeb=isWeb==null?false:true;
     if (params && params.title) {
         query['title'] = new RegExp(params.title);
     }
@@ -30,11 +30,13 @@ async function getBlogList(params, currentPage, pageSize) {
     //普通模式下 不需要在排序评论信息的 直接返回以节省性能
     if (params.search_field == null || (params.search_field != "cv" && params.search_field != "zan")) {
         for (let module of info.models) {
-            let count = await commentQuery.getCommentCount(module.uuid);
-            let zanCount = await  zanQuery.getZanCountByBlogId(module.uuid);
-            let channel = await channelQuery.getChannelByUUIDPromise(module.tag);
-            module['commentSize'] = count;
-            module['zanSize'] = zanCount;
+                let channel = await channelQuery.getChannelByUUIDPromise(module.tag); //频道信息
+                // if(isWeb==false){ //web跳过
+                    let count = await commentQuery.getCommentCount(module.uuid); //评论量
+                    let zanCount = await  zanQuery.getZanCountByBlogId(module.uuid);
+                    module['zanSize'] = zanCount;
+                    module['commentSize'] = count;
+                // }
             module['channelName'] = channel.name;
         }
         return info;
@@ -44,24 +46,26 @@ async function getBlogList(params, currentPage, pageSize) {
         let info = {};
         info.models = allModules;
         for (let module of info.models) {
-            let count = await commentQuery.getCommentCount(module.uuid);
-            let zanCount = await  zanQuery.getZanCountByBlogId(module.uuid);
-            let channel = await channelQuery.getChannelByUUIDPromise(module.tag);
-            module['commentSize'] = count;
-            module['zanSize'] = zanCount;
+            let channel = await channelQuery.getChannelByUUIDPromise(module.tag); //频道信息
+            // if(isWeb==false){ //web跳过
+              let count = await commentQuery.getCommentCount(module.uuid); //评论量
+              let zanCount = await  zanQuery.getZanCountByBlogId(module.uuid);
+              module['zanSize'] = zanCount;
+              module['commentSize'] = count;
+            // }
             module['channelName'] = channel.name;
         }
-        if (params.search_field == "cv") {
-            //按评论量排序
-            info.models.sort((a, b) => {
-                return b.commentSize - a.commentSize;
-            })
-        } else {
-            //按点赞量排序
-            info.models.sort((a, b) => {
-                return b.zanSize - a.zanSize;
-            })
-        }
+        // if (params.search_field == "cv") {
+        //     //按评论量排序
+        //     info.models.sort((a, b) => {
+        //         return b.commentSize - a.commentSize;
+        //     })
+        // } else {
+        //     //按点赞量排序
+        //     info.models.sort((a, b) => {
+        //         return b.zanSize - a.zanSize;
+        //     })
+        // }
         //内存分页
         info = queryParse.getPageQuery(currentPage, info.models);
         return info;
@@ -86,7 +90,8 @@ async function getSingle(uuid) {
 }
 
 //合并对象
-async function mergeData(data) {
+async function mergeData(data,isWeb) {
+    isWeb=isWeb==null?false:true;
     let query = {
         rank: 1
     }
@@ -94,11 +99,11 @@ async function mergeData(data) {
     let topChannels = await channelQuery.pagePromise(1, query, {}, 100);
     let allChannels = await channelQuery.getChannelALLPromise();
     //获取最近文章
-    let recentList = await getBlogList({search_field: "pv"},1, 5);
+    let recentList = await getBlogList({search_field: "pv"},1, 5,isWeb);
     //获取最热文章
-    let hotList = await getBlogList({search_field: "cv"},1, 5);
+    let hotList = await getBlogList({search_field: "cv"},1, 5,isWeb);
     //推荐文章
-    let recommendList = await getBlogList({search_field: "zan"},1, 5);
+    let recommendList = await getBlogList({search_field: "zan"},1, 5,isWeb);
     topChannels = topChannels.models;
     recentList = recentList.models;
     hotList = hotList.models;
@@ -110,5 +115,3 @@ async function mergeData(data) {
 }
 
 module.exports = {getBlogList, mergeData,getSingle};
-
-

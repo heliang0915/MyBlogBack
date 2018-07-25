@@ -32,9 +32,19 @@ router.post('/blogList', function (req, res) {
     var params = req.body.params;
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
     var pageSize=req.body.pageSize||10;
-    getBlogList(params,currentPage,pageSize).then(async (info)=>{
+
+    console.log("方法调用开始....");
+    var startTime=Date.now();
+    getBlogList(params,currentPage,pageSize,true).then(async (info)=>{
+        var endTime=Date.now();
+        console.log("方法耗时：：：："+(endTime-startTime)+"ms");
         // app.locals.blogList=info.modules;
-        let data=await mergeData(info);
+        console.log("方法调用合并方法开始....");
+        var start=Date.now();
+        let data=await mergeData(info,true);
+        var end=Date.now();
+        console.log("方法调用合并方法结束....");
+        console.log("方法耗时：：：："+(end-start)+"ms");
         res.send(data);
     }).catch((err)=>{
         console.log(err);
