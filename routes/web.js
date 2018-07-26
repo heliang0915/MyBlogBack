@@ -6,7 +6,7 @@ let {getBlogList,mergeData,getSingle}=require("./common");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
 
-//获取blog数量
+//获取blog数量 
 router.get('/getBlogTotal',function (req,res) {
     articleQuery.articleListAllPromise().then((list)=>{
         res.send(list.length.toString())

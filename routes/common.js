@@ -25,7 +25,7 @@ async function getBlogList(params, currentPage, pageSize,isWeb) {
         sort={};
         sort[params.search_field] = -1;
     }
-    console.log("Sort========="+JSON.stringify(sort));
+    // console.log("Sort========="+JSON.stringify(sort));
     let info = await  articleQuery.articleListPromise(currentPage, query, sort, pageSize);
     //普通模式下 不需要在排序评论信息的 直接返回以节省性能
     if (params.search_field == null || (params.search_field != "cv" && params.search_field != "zan")) {
@@ -55,17 +55,17 @@ async function getBlogList(params, currentPage, pageSize,isWeb) {
             // }
             module['channelName'] = channel.name;
         }
-        // if (params.search_field == "cv") {
-        //     //按评论量排序
-        //     info.models.sort((a, b) => {
-        //         return b.commentSize - a.commentSize;
-        //     })
-        // } else {
-        //     //按点赞量排序
-        //     info.models.sort((a, b) => {
-        //         return b.zanSize - a.zanSize;
-        //     })
-        // }
+        if (params.search_field == "cv") {
+            //按评论量排序
+            info.models.sort((a, b) => {
+                return b.commentSize - a.commentSize;
+            })
+        } else {
+            //按点赞量排序
+            info.models.sort((a, b) => {
+                return b.zanSize - a.zanSize;
+            })
+        }
         //内存分页
         info = queryParse.getPageQuery(currentPage, info.models);
         return info;
