@@ -6,9 +6,9 @@
 var config = {
     mongo: {
         //数据库链接地址
-        // url: 'mongodb://62b4a3b21cff4:60ae51958af04@10.0.0.26:30097/c0c2d08b56244',
         // url : 'mongodb://www.blogapi.top:27017/blogTest',
-        url:'mongodb://127.0.0.1:27017/blogTest',
+        // url:'mongodb://127.0.0.1:27017/blogTest',
+        url:'mongodb://3s.net579.com:15091/blogTest',
         //分页
         pageSize: 7
     },
