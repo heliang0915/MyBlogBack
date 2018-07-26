@@ -14,7 +14,7 @@ var  modelManager=require("../db/modelManager");
 
 for(let manager in modelManager){
     let fn=`
-    let ${manager} =modelManager.${manager} ; 
+    let ${manager} =modelManager.${manager} ;
     ${manager}=new ${manager}();
     global.${manager}=${manager};
      `
@@ -88,22 +88,22 @@ cacheAry.forEach(function (item,index){
                 cacheManager.${fnPrefix}All();
                 console.log("更新${text}缓存...");
             },
-            
+
             findByUUID(uuid){
                 return new Promise((resolve, reject)=>{
                     cache.exists('${fnPrefix}:all',(err,ext)=>{
                         if(ext){
-                         
+
                             cache.get('${fnPrefix}:all',(err,modules)=>{
                             console.log("findByUUID缓存查询....");
                                let module= modules.filter((item)=>{
                                     return item.uuid==uuid;
-                               })[0];  
+                               })[0];
                                  if (err) {
                                     reject(err)
                                 } else {
                                     resolve(module)
-                                } 
+                                }
                             });
                         }else{
                              ${fnPrefix}Manager.findByUUID(uuid, function (err, module) {
@@ -115,7 +115,7 @@ cacheAry.forEach(function (item,index){
                             });
                         }
                     });
-                    
+
                 });
             },
             find(query,sort){
@@ -136,7 +136,7 @@ cacheAry.forEach(function (item,index){
                                 modules.sort((a,b)=>{
                                     return (a[filed]-b[filed])*val;
                                 })
-                                
+
                                 console.log("调用[find]读取${fnPrefix}缓存");
                                 if (err) {
                                     reject(err)
@@ -152,13 +152,13 @@ cacheAry.forEach(function (item,index){
                                     resolve(modules)
                                 }
                             },sort)
-                            
+
                             console.log("查询数据库[find]${fnPrefix}");
-                        }    
+                        }
                     });
                 });
             }
-    
+
     };
         //导出全局变量一份 方便db中调用
         global.${fnPrefix}Cache=${fnPrefix}Cache;
