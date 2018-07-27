@@ -2,13 +2,13 @@
  * 生产环境下的部署配置
  */
 {
-  "name"             : "blogAPI",
+  "name"             : "BlogAPI",
   "script"           : "bin/www",
   "log_date_format"  : "YYYY-MM-DD HH:mm:ss Z",
   "error_file"       : "pm2/logs/error.log",
   "out_file"         : "pm2/logs/access.log",
   "pid_file"         : "pm2/pids/blogAPI.pid",
-  "instances"        : 6,
+  "instances"        : 1,
   "max_memory_restart": "100M",
   "watch"            : false,
   "ignore_watch"      : ["[\\/\\\\]\\./", "node_modules"],

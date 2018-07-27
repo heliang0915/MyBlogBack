@@ -47,6 +47,7 @@ let query={
             }
         })
         map=null;
+        console.log("去重后结果:::::"+ary.length);
         return ary;
     },
 

@@ -16,8 +16,12 @@ let util={
     userUtil:{
         //从token中直接解析userId 存入的时候也是只存了userId
         getUserId(req){
+            let userId="";
             var {token} = req.body;
-            let userId=tokenUtil.getByKey(token,"userId");
+            console.log("token::::"+token);
+            if(token){
+                userId=tokenUtil.getByKey(token,"userId");
+            }
             console.log("token中解析的userId为:"+userId);
             return userId;
         },
@@ -26,6 +30,11 @@ let util={
             let userId=tokenUtil.getByKey(token,"uuid");
             console.log("token中解析的userId为:"+userId);
             return userId;
+        },
+        checkLogin(req){
+            var {token} = req.body;
+            return tokenUtil.checkToken(token);
+
         },
         getTokenFromReq(req){
             let token=req.headers.token;

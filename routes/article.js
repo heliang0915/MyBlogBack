@@ -57,11 +57,11 @@ router.get('/single/:uuid',function(req,res){
        let blog={};
        if(uuid!=0){
            blog=await articleQuery.getArticleByUUIDPromise(uuid);
-           let channel=await channelQuery.getChannelByUUIDPromise(blog.tag);
+           // let channel=await channelQuery.getChannelByUUIDPromise(blog.tag);
 
-           if(channel){
-               blog["channelName"]=channel.name;
-           }
+           // if(channel){
+           //     blog["channelName"]=channel.name;
+           // }
        }
         var json={
             channels,

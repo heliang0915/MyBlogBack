@@ -20,13 +20,23 @@ var createHeader=(header)=>{
 
 //转发请求
 module.exports = function(url,req){
-    console.log("url地址[%s]",url+"?temp="+Math.random())
-    var params={}
-    if(req.method=="POST"){
-        params=req.body;
+
+    var params={};
+    let method='get';
+    if(req.method){
+        method=req.method;
+      if(req.method=="POST"){
+          params=req.body;
+      }
+    }else{
+      method="post";
+      params=req;
     }
+
+    console.log("url地址[%s]",url+"?temp="+Math.random())
+    // console.log(`方法${method}`)
     return new Promise((resolve,reject)=>{
-        axios[req.method.toString().toLowerCase()](url,params)
+        axios[method.toLowerCase()](url,params)
             .then((data)=>{
 
             var info= {

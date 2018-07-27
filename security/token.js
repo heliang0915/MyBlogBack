@@ -75,6 +75,7 @@ var token={
     },
     getByKey:function (token,key) {
         let isCheck=this.checkToken(token);
+        console.log("检查token结果:::"+isCheck);
         if(isCheck){
             let obj=this.decodeToken(token);
             let val=obj.payload.data[key];

@@ -17,8 +17,8 @@ let {getBlogList,getSingle}=require("./common");
 // let queryParse=require("../cache/util/queryParse")
 let  appId = wx.appId;
 let secret = wx.secret;
-
 userManager = new userManager();
+
 //登录
 router.get('/login/:code', function (req, res) {
     var code = req.params.code;
@@ -44,6 +44,7 @@ router.get('/exist/:tid', function (req, res) {
         }
     })
 });
+
 
 //微信注册登录
 router.post('/wxRegister', function (req, res) {
@@ -112,6 +113,7 @@ router.get('/blogSingle/:uuid', function (req, res) {
 router.post('/getZan',function (req,res) {
     var {blogId} = req.body;
     let userId=util.userUtil.getUserId(req);
+    console.log("userId::::::::::::::::::::::"+userId);
     if(userId){
         zanQuery.isZanPromise(userId,blogId).then((isZan)=>{
             res.send(isZan)
@@ -126,6 +128,7 @@ router.post('/getZan',function (req,res) {
 router.post('/blogZan', function (req, res) {
     var {blogId,isZan} = req.body;
     let userId=util.userUtil.getUserId(req);
+    console.log("userId################"+userId);
     if(userId){
         zanQuery.changeZanPromise(userId,blogId,isZan).then(()=>{
             res.send('ok')
@@ -136,17 +139,22 @@ router.post('/blogZan', function (req, res) {
         res.send('false')
     }
 });
+
+router.post('/checkLogin',function (req, res) {
+     let isLogin=util.userUtil.checkLogin(req);
+     res.send(isLogin);
+})
+
 //我的列表
 router.post('/myList',function (req, res) {
     let userId=util.userUtil.getUserId(req);
     var currentPage = req.body.page;
     var type = req.body.listType;
-
-    console.log(req.body);
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
      if(type==1){
          //获取我的点赞文章列表
          zanQuery.getArticleByUserId(userId,currentPage).then((info)=>{
+             console.log("info::::::::"+JSON.stringify(info));
              res.send(info)
          }).catch((err)=>{
              res.send(err)
@@ -154,8 +162,10 @@ router.post('/myList',function (req, res) {
      }else {
          //获取我的评论文章列表
          commentQuery.getBlogListByUserId(userId,currentPage).then((info)=>{
+             console.log("获取我的评论文章列表...........");
              res.send(info)
          }).catch((err)=>{
+             console.log("获取我的评论文章列表 出错..."+err);
              res.send(err)
          })
      }
