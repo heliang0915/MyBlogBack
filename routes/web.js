@@ -6,7 +6,7 @@ let {getBlogList,mergeData,getSingle}=require("./common");
 var articleQuery = require("../query/articleQuery");
 var channelQuery = require("../query/channelQuery");
 
-//获取blog数量 
+//获取blog数量
 router.get('/getBlogTotal',function (req,res) {
     articleQuery.articleListAllPromise().then((list)=>{
         res.send(list.length.toString())
@@ -29,11 +29,13 @@ router.get('/blogSingle/:uuid', function (req, res) {
 //web 获取文章列表
 router.post('/blogList', function (req, res) {
     var currentPage = req.body.page;
+    console.log(req.body);
     var params = req.body.params;
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
     var pageSize=req.body.pageSize||10;
     console.log("方法调用开始....");
     var startTime=Date.now();
+    console.log("currentPage:::::::::"+currentPage);
     getBlogList(params,currentPage,pageSize,true).then(async (info)=>{
         // var endTime=Date.now();
         // console.log("方法耗时：：：："+(endTime-startTime)+"ms");
@@ -43,7 +45,7 @@ router.post('/blogList', function (req, res) {
         let data=await mergeData(info,true);
         var end=Date.now();
         console.log("方法调用合并方法结束....");
-        console.log("API getBlogList 方法总耗时：：：："+(end-startTime)+"ms");
+        console.log("API  方法总耗时：：：："+(end-startTime)+"ms");
         res.send(data);
     }).catch((err)=>{
         console.log(err);
