@@ -33,7 +33,6 @@ router.post('/blogList', function (req, res) {
     currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
     var pageSize=req.body.pageSize||10;
     getBlogList(params,currentPage,pageSize).then(async (info)=>{
-        // app.locals.blogList=info.modules;
         let data=await mergeData(info);
         res.send(data);
     }).catch((err)=>{

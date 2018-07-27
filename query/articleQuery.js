@@ -71,7 +71,6 @@ function savePromise(uuid, model) {
     })
 }
 
-
 /**
  * 根据UUID获取文章信息
  * @param uuid 文章uuid
