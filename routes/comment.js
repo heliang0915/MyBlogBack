@@ -42,7 +42,9 @@ router.post('/list', function (req, res) {
                 } else {
                     comment.userName = "无";
                 }
-                comment.blogName = blog.title;
+                if(blog&&blog.title){
+                  comment.blogName = blog.title;
+                }
             }
         }
         return info;
