@@ -77,15 +77,12 @@ async function getBlogList(params, currentPage, pageSize, isWeb) {
 //查询单个
 async function getSingle(uuid) {
   let blog = await articleQuery.getArticleByUUIDPromise(uuid);
-  // let channel = await channelQuery.getChannelByUUIDPromise(blog.tag);
   //增加pv
   let pv = blog.pv == null
     ? 0
     : blog.pv;
   blog.pv = parseInt(pv) + 1;
-  console.log(JSON.stringify(blog))
   await articleQuery.savePromise(uuid, blog);
-  // blog["channelName"] = channel.name;
   var json = {
     module: blog
   }

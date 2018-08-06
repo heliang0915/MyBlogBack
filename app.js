@@ -47,7 +47,6 @@ app.use('/role', role);
 app.use('/comment', comment);
 app.use('/wx', wx);
 app.use('/web', web);
-// console.log("tag2");
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

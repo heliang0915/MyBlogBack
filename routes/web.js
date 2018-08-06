@@ -20,6 +20,7 @@ router.get('/blogSingle/:uuid', function (req, res) {
     var uuid = req.params.uuid == null ? 0 : req.params.uuid;
     getSingle(uuid).then(async (module)=>{
         let data=await mergeData(module);
+        
         res.send(data);
     }).catch((err)=>{
         res.send(err);
@@ -36,11 +37,7 @@ router.post('/blogList', function (req, res) {
     var startTime=Date.now();
     console.log("currentPage:::::::::"+currentPage);
     getBlogList(params,currentPage,pageSize,true).then(async (info)=>{
-        // var endTime=Date.now();
-        // console.log("方法耗时：：：："+(endTime-startTime)+"ms");
-        // // app.locals.blogList=info.modules;
         console.log("方法调用合并方法开始....");
-        // var start=Date.now();
         let data=await mergeData(info,true);
         var end=Date.now();
         console.log("方法调用合并方法结束....");
@@ -60,21 +57,7 @@ router.get('/channelChild/:uuid', function (req, res) {
         let models=info.models;
         res.send(models);
     })
-    // var currentPage = req.body.page;
-    // var params = req.body.params;
-    // currentPage = (currentPage == null || currentPage <= 0) ? 1 : currentPage;
-    // var pageSize=req.body.pageSize||10;
-    // getBlogList(params,currentPage,pageSize).then(async (info)=>{
-    //     // app.locals.blogList=info.modules;
-    //     let data=await mergeData(info);
-    //     res.send(data);
-    // }).catch((err)=>{
-    //     console.log(err);
-    //     res.send(err);
-    // })
 });
-
-
 
 //上下翻页
 // router.get('/blogPage/:uuid/:direction',function (req,res) {
