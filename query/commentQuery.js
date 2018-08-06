@@ -40,17 +40,13 @@ async function getBlogListByUserId(userId, currentPage, type = 1) {
         tid = userId;
     } else {  //type==1 为微信需将userId转换为tid
         let userModel = await userCache.findByUUID(userId);
-        console.log("userId@@@@@@@@@@@@@@@@@11111111"+userId);
         tid = userModel.tid;
     }
     query.userId = tid;
     //查询某人的评论信息
     let comments = await  commentCache.find(query);
-    console.log("comments:::::::::::"+comments.length);
     for (let commentModel of comments) {
-
         let {blogId} = commentModel;
-
         if(blogId){
             let blog = await blogCache.findByUUID(blogId);
             // let count = await getCommentCount(blogId);
@@ -210,5 +206,3 @@ module.exports={
     deleteCommentPromise,
     pagePromise
 }
-
-

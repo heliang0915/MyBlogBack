@@ -8,14 +8,8 @@ var token={
             created:parseInt(Date.now()/1000),//token生成的时间的，单位秒
             exp:parseInt(timeout)||10//token有效期a
         };
-
         //payload信息
-        console.log("obj"+JSON.stringify(obj));
-        console.log("obj2"+JSON.stringify(obj2));
         var base64Str=Buffer.from(JSON.stringify(obj2),"utf8").toString("base64");
-
-
-
         //添加签名，防篡改
         var hash=crypto.createHmac('sha256',secret);
         hash.update(base64Str);

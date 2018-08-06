@@ -9,21 +9,9 @@
 var  {zanManager}=require("../db/modelManager");
 var  {zanCache,blogCache,commentCache}=require("../cache/modelCache");
 var  queryParse=require("../cache/util/queryParse");
-// var commentQuery = require("../query/commentQuery");
-
-// var articleQuery = require("../query/articleQuery");
-// var channelQuery = require("../query/channelQuery");
-// var commentQuery = require("./commentQuery");
-
-// console.log("articleQuery>>>>"+Object.keys(articleQuery));
-// console.log("channelQuery>>>>"+Object.keys(channelQuery));
-// console.log("commentQuery>>>>"+Object.keys(commentQuery));
-
 var  util=require("../util/util");
 var  cheerio=require("cheerio");
 zanManager=new zanManager();
-// console.log(commentQuery)
-
 
 /**
  * 保存赞的信息
@@ -200,13 +188,9 @@ async function  getArticleByUserId(userId,currentPage,sort){
         });
         //描述信息
         blogModel.desc= util.stringUtil.substr(desc,90);
-        console.log(1);
         blogModel['commentSize'] =count;
-        console.log(2);
         blogModel['zanSize'] = zanCount;
-        console.log(3);
         blogModels.push(blogModel);
-        console.log(4);
     }
     // zanModels.forEach(async (zanModel)=>{
     //

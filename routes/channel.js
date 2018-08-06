@@ -22,8 +22,8 @@ router.post('/list',function(req,res){
     console.log("query$$$$$$$$$"+JSON.stringify(query));
     currentPage=(currentPage==null||currentPage<=0)?1:currentPage;
     sort=sort==null?{order:-1}:sort;
-    console.log(JSON.stringify(query));
-    console.log(sort);
+    // console.log(JSON.stringify(query));
+    // console.log(sort);
     channelQuery.pagePromise(currentPage, query,sort,pageSize).then(info=>{
         res.send(info);
     }).catch((err)=>{
