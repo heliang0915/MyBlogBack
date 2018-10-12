@@ -30,7 +30,7 @@ async function getBlogList(params, currentPage, pageSize, isWeb) {
   // console.log("Sort========="+JSON.stringify(sort));
   let info = await articleQuery.articleListPromise(currentPage, query, sort, pageSize);
   //普通模式下 不需要在排序评论信息的 直接返回以节省性能
-  if (params.search_field == null || (params.search_field != "cv" && params.search_field != "zan")) {
+  if (params==null||params.search_field == null || (params.search_field != "cv" && params.search_field != "zan")) {
     for (let module of info.models) {
       // let channel = await channelQuery.getChannelByUUIDPromise(module.tag); //频道信息
       // if(isWeb==false){ web跳过
