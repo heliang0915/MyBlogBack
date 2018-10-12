@@ -67,6 +67,7 @@ router.get('/single/:uuid', function (req, res) {
 
 //查询指定博客下的评论
 router.get('/getComments/:blogId', function (req, res) {
+    let imgURL=`https://static.blogapi.top/assets/images/faces/`
     var blogId = req.params.blogId == null ? 0 : req.params.blogId;
 
     getComments(blogId).then((comments) => {
@@ -93,7 +94,7 @@ router.get('/getComments/:blogId', function (req, res) {
                     }
                 }
                 comment.content = comment.content.replace(/\[em_(\d+)\]/g, (r1, r2) => {
-                    return `<img src='http://www.jq22.com/demo/qqFace/arclist/${r2}.gif' />`;
+                    return `<img src='${imgURL}/${r2}.gif' />`;
                 })
 
                 let children = await commentQuery.commentListByQueryPromise({type: 2, pid: comment.uuid});
@@ -105,7 +106,7 @@ router.get('/getComments/:blogId', function (req, res) {
                 }
                 children.forEach((com) => {
                     com.content = com.content.replace(/\[em_(\d+)\]/g, (r1, r2) => {
-                        return `<img src='http://www.jq22.com/demo/qqFace/arclist/${r2}.gif' />`;
+                        return `<img src='${imgURL}/${r2}.gif' />`;
                     })
                 })
                 comment.children = children;
