@@ -14,7 +14,7 @@ var config = {
     },
     wx: {
         appId: "wx4abeef7a084d03d6",
-        secret: "99f1972efce0d7f5c66fd76892eb98ff"
+        secret: "518ae3c83ad923f8eaecac20efe038b7"
     },
     redis:{
        port:6379,
